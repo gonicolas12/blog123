@@ -161,11 +161,11 @@ button {
 /* ========== Hero Section ========== */
 .hero {
     position: relative;
-    height: 630px;
+    height: 400px;
     display: flex;
     align-items: center;
     overflow: hidden;
-    margin-bottom: var(--spacing-2xl);
+    margin-bottom: var(--spacing-xl);
 }
 
 .hero-background {
@@ -225,18 +225,19 @@ button {
 
 .hero-title {
     font-family: var(--font-heading);
-    font-size: 60px;
+    font-size: 45px;
     font-weight: 700;
-    line-height: 1;
+    line-height: 1.1;
     letter-spacing: -1.5px;
-    margin-bottom: var(--spacing-lg);
+    margin-bottom: var(--spacing-md);
 }
 
 .hero-description {
-    font-size: 18px;
-    font-weight: 700;
+    font-size: 16px;
+    font-weight: 400;
     line-height: 1.56;
-    margin-bottom: var(--spacing-lg);
+    margin-bottom: var(--spacing-md);
+    display: none;
 }
 
 .hero-meta {
@@ -253,9 +254,7 @@ button {
 }
 
 .hero-actions {
-    display: flex;
-    gap: var(--spacing-md);
-    flex-wrap: wrap;
+    display: none;
 }
 
 /* ========== Boutons ========== */
@@ -296,19 +295,21 @@ button {
 }
 
 .btn-load-more {
-    margin: var(--spacing-2xl) auto;
+    margin: var(--spacing-2xl) auto 0;
     display: flex;
+    grid-column: 1 / -1;
 }
 
 /* ========== Dernières actualités ========== */
 .latest-news {
-    padding: var(--spacing-2xl) 0;
+    padding: var(--spacing-xl) 0 var(--spacing-2xl);
 }
 
 .news-grid {
     display: grid;
     grid-template-columns: 1fr 389px;
     gap: var(--spacing-lg);
+    margin-bottom: var(--spacing-2xl);
 }
 
 .news-main {
@@ -396,7 +397,7 @@ button {
 
 /* ========== Analyses & reportages ========== */
 .featured-articles {
-    padding: var(--spacing-2xl) 0;
+    padding: 0 0 var(--spacing-2xl);
 }
 
 .featured-articles .container {
@@ -408,9 +409,9 @@ button {
 
 .articles-grid {
     display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(400px, 1fr));
+    grid-template-columns: repeat(2, 1fr);
     gap: var(--spacing-lg);
-    grid-column: 1 / -1;
+    grid-column: 1;
 }
 
 .article-card {
@@ -419,6 +420,8 @@ button {
     overflow: hidden;
     box-shadow: 0 10px 40px rgba(0, 0, 0, 0.4);
     transition: var(--transition);
+    display: flex;
+    flex-direction: column;
 }
 
 .article-card:hover {
@@ -487,7 +490,7 @@ button {
 /* ========== Sidebar ========== */
 .sidebar {
     grid-column: 2;
-    grid-row: 1 / 3;
+    grid-row: 2;
     display: flex;
     flex-direction: column;
     gap: var(--spacing-lg);
