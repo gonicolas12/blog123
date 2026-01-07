@@ -1,4 +1,4 @@
-# # Blog123 - Site d'actualités sportives
+# Blog123 - Site d'actualités sportives
 
 ## 📁 Architecture du projet
 
