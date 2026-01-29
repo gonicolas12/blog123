@@ -1,145 +1,251 @@
-# Blog123 - Site d'actualités sportives
+# Blog123 - Blog Sportif
 
-## 📁 Architecture du projet
+Une application web full-stack pour publier et consulter des articles sportifs.
+
+## Architecture
 
 ```
 blog123/
-├── index.html          # Page d'accueil
-├── css/
-│   └── styles.css      # Tous les styles CSS
-├── js/
-│   └── main.js         # Scripts JavaScript
-├── assets/
-│   └── images/         # Images et logos
-└── README.md           # Documentation
+├── frontend/          # Application Vue.js 3
+│   ├── src/
+│   │   ├── components/   # Composants réutilisables
+│   │   ├── views/        # Pages/vues
+│   │   ├── router/       # Configuration Vue Router
+│   │   ├── stores/       # Stores Pinia
+│   │   └── services/     # Services API
+│   └── public/
+│       └── assets/       # Images, audio, etc.
+│
+├── backend/           # API NestJS
+│   └── src/
+│       ├── articles/     # Module articles
+│       ├── auth/         # Module authentification
+│       ├── users/        # Module utilisateurs
+│       ├── categories/   # Module catégories
+│       └── interviews/   # Module interviews
+│
+└── docs/             # Ancienne version statique (archivée)
 ```
 
-## 🚀 Fonctionnalités
+## Technologies
 
-### Implémentées
-- ✅ Design moderne et responsive
-- ✅ Header sticky avec navigation
-- ✅ Section hero avec article à la une
-- ✅ Grille d'articles avec images
-- ✅ Sidebar avec tendances et newsletter
-- ✅ Catégories de sports
-- ✅ Footer complet avec liens sociaux
-- ✅ Animations au scroll
-- ✅ Menu mobile
-- ✅ Recherche modale
-- ✅ Formulaire newsletter
-- ✅ Lazy loading des images
+### Frontend
+- **Vue 3** - Framework JavaScript progressif
+- **Vue Router** - Routage SPA
+- **Pinia** - Gestion d'état
+- **Tailwind CSS** - Framework CSS utilitaire
+- **Axios** - Client HTTP
+- **Vite** - Build tool
 
-### À développer
-- [ ] Système de routing pour les pages article
-- [ ] Connexion à une API backend
-- [ ] Système de commentaires
-- [ ] Partage social
-- [ ] Mode sombre/clair
-- [ ] Système de favoris
-- [ ] Recherche avancée
+### Backend
+- **NestJS** - Framework Node.js
+- **TypeORM** - ORM pour MySQL
+- **MySQL** - Base de données
+- **JWT** - Authentification
+- **Passport** - Stratégies d'authentification
+- **bcrypt** - Hashage de mots de passe
 
-## 🎨 Technologies utilisées
+## Installation
 
-- **HTML5** - Structure sémantique
-- **CSS3** - Styles modernes avec variables CSS
-- **JavaScript Vanilla** - Pas de dépendances
-- **Google Fonts** - Oswald & Source Sans 3
+### Prérequis
+- Node.js 18+
+- MySQL 8+
+- npm ou yarn
 
-## 📱 Responsive Design
+### Installation rapide
 
-Le site est entièrement responsive et optimisé pour :
-- 📱 Mobile (< 768px)
-- 📱 Tablette (768px - 992px)
-- 💻 Desktop (> 992px)
-
-## 🔧 Installation & Utilisation
-
-### Méthode 1 : Directement dans le navigateur
-1. Ouvrez `index.html` dans votre navigateur
-2. C'est tout ! 🎉
-
-### Méthode 2 : Avec un serveur local
 ```bash
-# Avec Python 3
-python -m http.server 8000
-
-# Avec Node.js (npx)
-npx serve
-
-# Puis ouvrez http://localhost:8000
+# Installer toutes les dépendances (root + frontend + backend)
+npm run install:all
 ```
 
-## 🖼️ Images
+### Installation manuelle
 
-Pour ajouter votre logo :
-1. Placez votre logo dans `assets/images/logo.png`
-2. Le site l'utilisera automatiquement
+```bash
+# Installer les dépendances root
+npm install
 
-Les images des articles utilisent actuellement des URLs de Builder.io.
-Pour utiliser vos propres images, remplacez les URLs dans `index.html`.
+# Frontend
+cd frontend
+npm install
 
-## 🎯 Personnalisation
-
-### Couleurs
-Modifiez les variables CSS dans `css/styles.css` :
-```css
-:root {
-    --primary-color: #F59B0A;      /* Orange principal */
-    --secondary-color: #FFBF00;    /* Jaune */
-    --accent-color: #EC1313;       /* Rouge */
-    --dark-bg: #101318;            /* Fond sombre */
-    /* ... */
-}
+# Backend
+cd ../backend
+npm install
 ```
 
-### Typographie
-Les polices sont importées depuis Google Fonts :
-- **Oswald** - Titres et navigation
-- **Source Sans 3** - Texte du corps
+## Configuration
 
-## 📝 Structure du code
+### Backend
 
-### HTML (`index.html`)
-- Structure sémantique claire
-- Attributs ARIA pour l'accessibilité
-- Classes BEM-like pour le CSS
+1. Créer le fichier `.env` dans le dossier `backend/` :
 
-### CSS (`css/styles.css`)
-- Variables CSS pour la cohérence
-- Mobile-first approach
-- Animations fluides
-- Grid & Flexbox modernes
+```bash
+cp backend/.env.example backend/.env
+```
 
-### JavaScript (`js/main.js`)
-- Code modulaire et commenté
-- Gestion du menu mobile
-- Animations au scroll
-- Recherche modale
-- Newsletter
+2. Configurer les variables d'environnement :
 
-## 🌐 Compatibilité navigateurs
+```env
+NODE_ENV=development
+PORT=3000
 
-- ✅ Chrome (dernière version)
-- ✅ Firefox (dernière version)
-- ✅ Safari (dernière version)
-- ✅ Edge (dernière version)
+# Database
+DB_HOST=localhost
+DB_PORT=3306
+DB_USERNAME=root
+DB_PASSWORD=your_password
+DB_DATABASE=blog123
 
-## 📄 Licence
+# JWT
+JWT_SECRET=your-super-secret-jwt-key-change-in-production
 
-Ce projet est libre d'utilisation pour vos besoins éducatifs et professionnels.
+# Frontend URL (for CORS)
+FRONTEND_URL=http://localhost:5173
+```
 
-## 🤝 Contribution
+3. Créer la base de données MySQL :
 
-Pour améliorer le projet :
-1. Ajoutez de nouvelles fonctionnalités dans `js/main.js`
-2. Créez de nouveaux composants CSS dans `css/styles.css`
-3. Ajoutez de nouvelles pages HTML selon vos besoins
+```sql
+CREATE DATABASE blog123;
+```
 
-## 📞 Support
+## Démarrage
 
-Pour toute question, consultez la documentation ou les commentaires dans le code.
+### Développement
 
----
+```bash
+# Lancer frontend et backend simultanément
+npm run dev
 
-**Fait avec ❤️ pour les fans de sport**
+# Ou séparément :
+# Frontend (http://localhost:5173)
+npm run dev:frontend
+
+# Backend (http://localhost:3000)
+npm run dev:backend
+```
+
+### Production
+
+```bash
+# Build
+npm run build
+
+# Frontend
+cd frontend && npm run build
+
+# Backend
+cd backend && npm run build
+cd backend && npm run start:prod
+```
+
+## API Endpoints
+
+### Authentification
+- `POST /api/auth/register` - Créer un compte
+- `POST /api/auth/login` - Se connecter
+
+### Articles
+- `GET /api/articles` - Liste des articles
+- `GET /api/articles?sport=foot` - Articles par sport
+- `GET /api/articles/:id` - Détail d'un article
+- `POST /api/articles` - Créer un article (Auth requise)
+- `PATCH /api/articles/:id` - Modifier un article (Auth requise)
+- `DELETE /api/articles/:id` - Supprimer un article (Auth requise)
+
+### Utilisateurs
+- `GET /api/users` - Liste des utilisateurs (Auth requise)
+- `GET /api/users/:id` - Détail utilisateur (Auth requise)
+
+### Catégories
+- `GET /api/categories` - Liste des catégories
+- `GET /api/categories/:id` - Détail catégorie
+- `POST /api/categories` - Créer catégorie (Auth requise)
+
+### Interviews
+- `GET /api/interviews` - Liste des interviews
+- `GET /api/interviews?sport=basket` - Interviews par sport
+- `GET /api/interviews/:id` - Détail interview
+- `POST /api/interviews` - Créer interview (Auth requise)
+
+## Déploiement
+
+### Frontend (Vercel/Netlify)
+```bash
+cd frontend
+npm run build
+# Déployer le dossier dist/
+```
+
+### Backend (Railway/Render)
+```bash
+cd backend
+npm run build
+# Déployer avec start:prod
+```
+
+### Database (PlanetScale)
+Configurer la connexion MySQL avec les credentials PlanetScale
+
+## Structure de la base de données
+
+### Users
+- id (uuid)
+- email (unique)
+- password (hashed)
+- role (admin/user)
+- firstName
+- lastName
+- createdAt
+- updatedAt
+
+### Articles
+- id (uuid)
+- title
+- content (text)
+- sport
+- imageUrl
+- excerpt
+- published (boolean)
+- authorId (FK users)
+- createdAt
+- updatedAt
+
+### Interviews
+- id (uuid)
+- sportifName
+- sport
+- questions (array)
+- answers (array)
+- audioUrl
+- imageUrl
+- published (boolean)
+- createdAt
+
+### Categories
+- id (uuid)
+- name (unique)
+- slug (unique)
+- description
+- createdAt
+
+## Développement
+
+### Conventions de code
+- Utiliser ESLint pour le linting
+- Commits conventionnels (conventional commits)
+- TypeScript pour le backend
+- Composition API pour Vue.js
+
+### Tests
+```bash
+# Backend tests
+cd backend
+npm run test
+npm run test:e2e
+```
+
+## Licence
+
+MIT
