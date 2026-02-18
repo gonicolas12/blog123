@@ -107,10 +107,14 @@ const routeSlugMap = {
 const resolveSlug = (param) => routeSlugMap[param?.toLowerCase()] ?? 'all'
 
 const activeSport = ref(resolveSlug(route.params.sport))
-const activeType = ref('all')
+const activeType = ref(route.query.type?.toLowerCase() ?? 'all')
 
 watch(() => route.params.sport, (val) => {
   activeSport.value = resolveSlug(val)
+})
+
+watch(() => route.query.type, (val) => {
+  activeType.value = val?.toLowerCase() ?? 'all'
 })
 
 const sportFilters = ref([

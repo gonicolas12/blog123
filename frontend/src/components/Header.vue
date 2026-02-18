@@ -75,10 +75,10 @@
             <div class="search-tags">
               <button 
                 v-for="tag in quickTags" 
-                :key="tag" 
+                :key="tag.slug" 
                 class="search-tag"
-                @click="searchQuery = tag; handleSearch()"
-              >{{ tag }}</button>
+                @click="navigateTag(tag)"
+              >{{ tag.label }}</button>
             </div>
           </div>
 
@@ -113,14 +113,21 @@
 
 <script setup>
 import { ref, nextTick, computed } from 'vue'
-import { RouterLink, useRoute } from 'vue-router'
+import { RouterLink, useRoute, useRouter } from 'vue-router'
 
 const route = useRoute()
+const router = useRouter()
 const showSearch = ref(false)
 const searchQuery = ref('')
 const searchInput = ref(null)
 
-const quickTags = ['Football', 'Basketball', 'Analyse', 'Interview', 'Tennis']
+const quickTags = [
+  { label: 'Football', type: 'sport', slug: 'football' },
+  { label: 'Basketball', type: 'sport', slug: 'basketball' },
+  { label: 'Analyse', type: 'type', slug: 'analyse' },
+  { label: 'Interview', type: 'type', slug: 'interview' },
+  { label: 'Tennis', type: 'sport', slug: 'tennis' },
+]
 
 const allResults = [
   {
@@ -177,9 +184,28 @@ const handleSearchInput = () => {
 }
 
 const handleSearch = () => {
-  if (searchQuery.value.trim()) {
-    closeSearch()
+  const q = searchQuery.value.trim().toLowerCase()
+  if (!q) return
+  // Try to match a sport or type tag
+  const sportMatch = quickTags.find(t => t.type === 'sport' && t.label.toLowerCase() === q)
+  const typeMatch = quickTags.find(t => t.type === 'type' && t.label.toLowerCase() === q)
+  if (sportMatch) {
+    router.push(`/sport/${sportMatch.slug}`)
+  } else if (typeMatch) {
+    router.push({ path: '/sport/all', query: { type: typeMatch.slug } })
+  } else {
+    router.push({ path: '/sport/all', query: { q: searchQuery.value.trim() } })
   }
+  closeSearch()
+}
+
+const navigateTag = (tag) => {
+  if (tag.type === 'sport') {
+    router.push(`/sport/${tag.slug}`)
+  } else {
+    router.push({ path: '/sport/all', query: { type: tag.slug } })
+  }
+  closeSearch()
 }
 </script>
 

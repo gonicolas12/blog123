@@ -42,7 +42,7 @@
     <section class="team-section">
       <div class="team-inner">
         <h2 class="section-heading-accent">LA TEAM</h2>
-        <p class="team-sub">Meet the passionate journalists behind Blog123</p>
+        <p class="team-sub">Découvrez les passionnés qui font vivre Blog123</p>
         <div class="team-grid">
           <div v-for="(member, i) in team" :key="i" class="member-card">
             <img :src="member.avatar" :alt="member.name" class="member-avatar" />
@@ -99,34 +99,46 @@ const values = ref([
 
 const team = ref([
   {
-    name: 'Marcus Chen',
-    role: 'Rédacteur en Chef',
-    bio: 'Marcus brings over 15 years of sports journalism experience, having covered major events from the World Cup to the Olympics.',
-    avatar: 'https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=200&q=80'
+    name: 'Shemsedine MALAGOUEN',
+    role: 'Chef de projet',
+    bio: 'Shemsedine est un passionné de sport avec une expérience dans la gestion de projets sportifs. Il est responsable de la coordination de l\'équipe et de la stratégie éditoriale du site.',
+    avatar: 'https://media.licdn.com/dms/image/v2/D4D03AQEmvdWJ3xXyOQ/profile-displayphoto-shrink_800_800/B4DZbtdKr3HEAc-/0/1747740570484?e=1773273600&v=beta&t=zg9CuO77NKd5l13TG6Wnrt5uF4VmizARZ9mNveXdeJA'
   },
   {
-    name: 'Sarah Mitchell',
-    role: 'Senior Writer',
-    bio: 'Sarah specializes in tennis and motorsport coverage, known for her insightful player interviews and race analysis.',
-    avatar: 'https://images.unsplash.com/photo-1494790108755-2616b612b786?w=200&q=80'
+    name: 'Brenn MAKOUYA',
+    role: 'Développeur',
+    bio: 'Brenn est un développeur passionné par les technologies web et mobiles. Il contribue à l\'architecture technique du site et à l\'optimisation de l\'expérience utilisateur.',
+    avatar: 'https://media.licdn.com/dms/image/v2/D4D03AQFb1n3PUlhzGg/profile-displayphoto-crop_800_800/B4DZxw2avtJcAI-/0/1771419845789?e=1773273600&v=beta&t=-v-hVKwJ2UqTHkg3Wq5KE9vxSLYOJp0-E4GC4ZENyRI'
   },
   {
-    name: 'Lucas Petit',
-    role: 'Senior Writer',
-    bio: 'Sarah specializes in tennis and motorsport coverage, known for her insightful player interviews and race analysis.',
-    avatar: 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=200&q=80'
+    name: 'Nicolas GOUY',
+    role: 'Spécialiste Data & AI',
+    bio: 'Nicolas est un expert en data et intelligence artificielle, spécialisé dans l\'analyse des performances sportives et la création de modèles prédictifs.',
+    avatar: 'https://media.licdn.com/dms/image/v2/D5603AQEjbjff4btC_w/profile-displayphoto-shrink_800_800/B56ZSIg9jpHsAg-/0/1737457130228?e=1773273600&v=beta&t=zmBRWbLCB3rmVUFrIqmsHI_TJ6T96jirSiGvijjWGBQ'
   },
   {
-    name: 'Sophie Durand',
-    role: 'Senior Writer',
-    bio: 'Sarah specializes in tennis and motorsport coverage, known for her insightful player interviews and race analysis.',
-    avatar: 'https://images.unsplash.com/photo-1438761681033-6461ffad8d80?w=200&q=80'
+    name: 'Josué ADAMI',
+    role: 'Spécialiste Data & AI',
+    bio: 'Josué est un spécialiste en data et intelligence artificielle, avec une expertise dans l\'analyse des données sportives et la création de modèles prédictifs.',
+    avatar: 'https://media.licdn.com/dms/image/v2/D5603AQG6zmbexZAW_Q/profile-displayphoto-shrink_800_800/B56ZXhvWrqHQAc-/0/1743249043816?e=1773273600&v=beta&t=u3qIlWA9Ys9S2Nzpz9VZmIwm6iLdJzNjUhKRegwBc3E'
   },
   {
-    name: 'Antoine Moreau',
-    role: 'Senior Writer',
-    bio: 'Sarah specializes in tennis and motorsport coverage, known for her insightful player interviews and race analysis.',
+    name: 'Saman Paul Alex MEA',
+    role: 'Designer',
+    bio: 'Saman est un designer talentueux avec une passion pour le sport. Il est responsable de l\'identité visuelle du site et de la création d\'une expérience utilisateur attrayante et intuitive.',
     avatar: 'https://images.unsplash.com/photo-1500648767791-00dcc994a43e?w=200&q=80'
+  },
+  {
+    name: 'Daurate KOUADIO',
+    role: 'Designer',
+    bio: 'Daurate est un designer passionné par l\'expérience utilisateur et l\'identité visuelle du site. Il contribue à la création d\'une interface intuitive et attrayante.',
+    avatar: 'https://media.licdn.com/dms/image/v2/D5603AQFDbOIBhfikiw/profile-displayphoto-shrink_800_800/profile-displayphoto-shrink_800_800/0/1684767873823?e=1773273600&v=beta&t=C3UxQpdZc7jprR6Kln6brT42Xo4WDY4uxNm_cjAy3gQ'
+  },
+  {
+    name: 'Guillaume MARDINLI',
+    role: 'Spécialiste Infrastructure',
+    bio: 'Guillaume est un expert en infrastructure technique, spécialisé dans l\'optimisation des performances du site et la gestion des ressources.',
+    avatar: 'https://media.licdn.com/dms/image/v2/D4E03AQF24gJSusSLEg/profile-displayphoto-shrink_800_800/profile-displayphoto-shrink_800_800/0/1727360127849?e=1773273600&v=beta&t=jfhMdj76pZo8Otm5G8Qs1NaQ_zeDFKn-Z9rHcs2_mGM'
   }
 ])
 </script>
