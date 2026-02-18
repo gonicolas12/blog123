@@ -13,7 +13,7 @@
     <div class="contact-body">
       <!-- LEFT: Get in Touch -->
       <div class="get-in-touch">
-        <h2 class="git-title">Get in Touch</h2>
+        <h2 class="git-title">Informations de contact</h2>
 
         <div class="info-list">
           <div class="info-item">
@@ -22,7 +22,7 @@
             </div>
             <div class="info-text">
               <p class="info-label">Email</p>
-              <p class="info-value">contact@blog123.com</p>
+              <p class="info-value"><a href="mailto:blog123toulouse@gmail.com">blog123toulouse@gmail.com</a></p>
             </div>
           </div>
 
@@ -31,8 +31,8 @@
               <svg width="20" height="20" viewBox="0 0 24 24" fill="none"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07A19.5 19.5 0 0 1 4.69 13.5 19.79 19.79 0 0 1 1.61 4.88 2 2 0 0 1 3.6 2.72l3-.01a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L7.91 9.91a16 16 0 0 0 6.18 6.18l1.56-1.56a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z" stroke="#FC602E" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
             </div>
             <div class="info-text">
-              <p class="info-label">Phone</p>
-              <p class="info-value">+1 (555) 123-4567</p>
+              <p class="info-label">Téléphone</p>
+              <p class="info-value">+33 7 49 09 57 50</p>
             </div>
           </div>
 
@@ -41,8 +41,8 @@
               <svg width="20" height="20" viewBox="0 0 24 24" fill="none"><path d="M21 10c0 7-9 13-9 13S3 17 3 10a9 9 0 1 1 18 0z" stroke="#FC602E" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/><circle cx="12" cy="10" r="3" stroke="#FC602E" stroke-width="2"/></svg>
             </div>
             <div class="info-text">
-              <p class="info-label">Address</p>
-              <p class="info-value">123 Sports Avenue<br/>Toulouse, 31000</p>
+              <p class="info-label">Adresse</p>
+              <p class="info-value">2 place de l'europe<br/>Toulouse, 31000</p>
             </div>
           </div>
         </div>
@@ -52,7 +52,7 @@
           <h3 class="hours-title">Ouverture</h3>
           <div class="hours-row">
             <span>Lundi - Vendredi</span>
-            <span class="hours-val">9h - 18h</span>
+            <span class="hours-val">8h30 - 16h30</span>
           </div>
           <div class="hours-row">
             <span>Samedi</span>
@@ -203,6 +203,15 @@ const handleSubmit = () => {
   font-size: 14px;
   color: #FAFAFA;
   line-height: 1.5;
+}
+
+.info-value a {
+  color: #FC602E;
+  text-decoration: none;
+}
+
+.info-value a:hover {
+  text-decoration: underline;
 }
 
 /* Hours */
