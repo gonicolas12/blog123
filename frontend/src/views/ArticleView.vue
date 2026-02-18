@@ -116,15 +116,15 @@
           <p class="author-label">ÉCRIT PAR</p>
           <div class="author-card">
             <img 
-              :src="article.author?.avatar || 'https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=100&q=80'" 
+              :src="article.author?.avatar || 'https://media.licdn.com/dms/image/v2/D4D03AQEmvdWJ3xXyOQ/profile-displayphoto-shrink_800_800/B4DZbtdKr3HEAc-/0/1747740570484?e=1773273600&v=beta&t=zg9CuO77NKd5l13TG6Wnrt5uF4VmizARZ9mNveXdeJA'" 
               :alt="authorName"
               class="author-avatar"
             />
             <div class="author-info">
               <h4 class="author-name">{{ authorName }}</h4>
-              <p class="author-role">Senior Sports Analyst</p>
+              <p class="author-role">Chef de projet</p>
               <p class="author-bio">
-                {{ authorName }} couvre le football international depuis 15 ans, apportant des analyses tactiques et des récits en coulisses des plus grands tournois mondiaux.
+                {{ authorName }} est un passionné de sport et de journalisme. En tant que chef de projet chez Blog123, il supervise la création de contenu captivant et de haute qualité, en veillant à ce que chaque article offre une perspective unique et approfondie sur le monde du sport.
               </p>
             </div>
           </div>
@@ -209,7 +209,7 @@ const sampleContent = `
 `
 
 const authorName = computed(() => {
-  if (!article.value?.author) return 'Marcus Chen'
+  if (!article.value?.author) return 'Shemsedine MALAGOUEN'
   const a = article.value.author
   if (a.firstName && a.lastName) return `${a.firstName} ${a.lastName}`
   return a.firstName || a.email?.split('@')[0] || 'Auteur'
@@ -287,7 +287,7 @@ onMounted(async () => {
       content: sampleContent,
       createdAt: '2024-01-15',
       category: { name: 'Football', slug: 'foot' },
-      author: { firstName: 'Marcus', lastName: 'Chen', email: 'marcus@blog123.com' }
+      author: { firstName: 'Shemsedine', lastName: 'MALAGOUEN', email: 'blog123toulouse@gmail.com' }
     }
   } finally {
     loading.value = false
