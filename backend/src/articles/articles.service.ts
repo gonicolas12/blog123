@@ -27,9 +27,9 @@ export class ArticlesService {
     });
   }
 
-  async findBySport(sport: string): Promise<Article[]> {
+  async findByCategory(categoryId: string): Promise<Article[]> {
     return this.articlesRepository.find({
-      where: { sport, published: true },
+      where: { categoryId, published: true },
       order: { createdAt: 'DESC' },
     });
   }

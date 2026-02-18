@@ -15,9 +15,9 @@ export class ArticlesController {
   }
 
   @Get()
-  findAll(@Query('sport') sport?: string) {
-    if (sport) {
-      return this.articlesService.findBySport(sport);
+  findAll(@Query('category') categoryId?: string) {
+    if (categoryId) {
+      return this.articlesService.findByCategory(categoryId);
     }
     return this.articlesService.findAll();
   }

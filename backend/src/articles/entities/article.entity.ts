@@ -1,5 +1,7 @@
-import { Entity, Column, PrimaryGeneratedColumn, CreateDateColumn, UpdateDateColumn, ManyToOne, JoinColumn } from 'typeorm';
+import { Entity, Column, PrimaryGeneratedColumn, CreateDateColumn, UpdateDateColumn, ManyToOne, OneToMany, JoinColumn } from 'typeorm';
 import { User } from '../../users/entities/user.entity';
+import { Category } from '../../categories/entities/category.entity';
+import { Comment } from '../../comments/entities/comment.entity';
 
 @Entity('articles')
 export class Article {
@@ -11,9 +13,6 @@ export class Article {
 
   @Column('text')
   content: string;
-
-  @Column()
-  sport: string;
 
   @Column({ nullable: true })
   imageUrl: string;
@@ -30,6 +29,16 @@ export class Article {
 
   @Column()
   authorId: string;
+
+  @ManyToOne(() => Category, (category) => category.articles, { eager: true, nullable: true })
+  @JoinColumn({ name: 'categoryId' })
+  category: Category;
+
+  @Column({ nullable: true })
+  categoryId: string;
+
+  @OneToMany(() => Comment, (comment) => comment.article)
+  comments: Comment[];
 
   @CreateDateColumn()
   createdAt: Date;

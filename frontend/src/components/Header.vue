@@ -11,44 +11,35 @@
         <RouterLink 
           to="/" 
           class="nav-link"
-          :class="{ active: $route.path === '/' }"
+          :class="{ active: $route.name === 'home' }"
         >
           Articles
         </RouterLink>
-        <div class="nav-dropdown">
-          <span class="nav-link nav-link-dropdown">
-            Sport
-            <svg width="12" height="12" viewBox="0 0 12 12" fill="none">
-              <path d="M3 4.5L6 7.5L9 4.5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
-            </svg>
-          </span>
-          <div class="dropdown-menu">
-            <RouterLink to="/sport/foot" class="dropdown-item">Football</RouterLink>
-            <RouterLink to="/sport/basket" class="dropdown-item">Basketball</RouterLink>
-            <RouterLink to="/sport/tennis" class="dropdown-item">Tennis</RouterLink>
-            <RouterLink to="/sport/rugby" class="dropdown-item">Rugby</RouterLink>
-            <RouterLink to="/sport/f1" class="dropdown-item">Formule 1</RouterLink>
-            <RouterLink to="/sport/mma" class="dropdown-item">MMA</RouterLink>
-          </div>
-        </div>
+        <RouterLink
+          to="/sport/all"
+          class="nav-link"
+          :class="{ active: $route.path.startsWith('/sport') }"
+        >
+          Sport
+        </RouterLink>
         <RouterLink 
           to="/about" 
           class="nav-link"
-          :class="{ active: $route.path === '/about' }"
+          :class="{ active: $route.name === 'about' }"
         >
           À propos
         </RouterLink>
         <RouterLink 
           to="/contact" 
           class="nav-link"
-          :class="{ active: $route.path === '/contact' }"
+          :class="{ active: $route.name === 'contact' }"
         >
           Contact
         </RouterLink>
       </nav>
 
       <!-- Search Icon -->
-      <button class="search-btn" @click="toggleSearch">
+      <button class="search-btn" @click="openSearch">
         <svg width="20" height="20" viewBox="0 0 24 24" fill="none">
           <circle cx="11" cy="11" r="8" stroke="currentColor" stroke-width="2"/>
           <path d="M21 21L16.65 16.65" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
@@ -57,28 +48,71 @@
     </div>
 
     <!-- Search Overlay -->
-    <div v-if="showSearch" class="search-overlay" @click.self="toggleSearch">
-      <div class="search-container">
-        <input 
-          type="text" 
-          v-model="searchQuery"
-          placeholder="Rechercher un article..."
-          class="search-input"
-          @keyup.enter="handleSearch"
-          ref="searchInput"
-        />
-        <button class="search-close" @click="toggleSearch">
-          <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
-            <path d="M18 6L6 18M6 6L18 18" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
-          </svg>
-        </button>
+    <Transition name="search-fade">
+      <div v-if="showSearch" class="search-overlay" @click.self="closeSearch">
+        <div class="search-panel">
+          <!-- Search bar -->
+          <div class="search-bar-wrapper">
+            <svg class="search-icon-inner" width="20" height="20" viewBox="0 0 24 24" fill="none">
+              <circle cx="11" cy="11" r="8" stroke="#9CA3AF" stroke-width="2"/>
+              <path d="M21 21L16.65 16.65" stroke="#9CA3AF" stroke-width="2" stroke-linecap="round"/>
+            </svg>
+            <input 
+              type="text" 
+              v-model="searchQuery"
+              placeholder="Rechercher des articles,sports..."
+              class="search-input"
+              @input="handleSearchInput"
+              @keyup.enter="handleSearch"
+              @keyup.esc="closeSearch"
+              ref="searchInput"
+            />
+          </div>
+
+          <!-- Quick tags -->
+          <div class="search-section">
+            <p class="search-section-label">Recherche rapide</p>
+            <div class="search-tags">
+              <button 
+                v-for="tag in quickTags" 
+                :key="tag" 
+                class="search-tag"
+                @click="searchQuery = tag; handleSearch()"
+              >{{ tag }}</button>
+            </div>
+          </div>
+
+          <!-- Results -->
+          <div v-if="searchResults.length > 0" class="search-section">
+            <p class="search-section-label">Recherche rapide</p>
+            <div class="search-results">
+              <RouterLink
+                v-for="result in searchResults"
+                :key="result.id"
+                :to="`/article/${result.id}`"
+                class="search-result-item"
+                @click="closeSearch"
+              >
+                <img :src="result.image" :alt="result.title" class="result-img" />
+                <div class="result-content">
+                  <div class="result-tags">
+                    <span class="result-tag" :style="{ background: result.categoryColor }">{{ result.category }}</span>
+                    <span class="result-tag result-tag-type">{{ result.type }}</span>
+                  </div>
+                  <p class="result-title">{{ result.title }}</p>
+                  <p class="result-sub" v-if="result.sub">{{ result.sub }}</p>
+                </div>
+              </RouterLink>
+            </div>
+          </div>
+        </div>
       </div>
-    </div>
+    </Transition>
   </header>
 </template>
 
 <script setup>
-import { ref, nextTick } from 'vue'
+import { ref, nextTick, computed } from 'vue'
 import { RouterLink, useRoute } from 'vue-router'
 
 const route = useRoute()
@@ -86,20 +120,65 @@ const showSearch = ref(false)
 const searchQuery = ref('')
 const searchInput = ref(null)
 
-const toggleSearch = () => {
-  showSearch.value = !showSearch.value
-  if (showSearch.value) {
-    nextTick(() => {
-      searchInput.value?.focus()
-    })
+const quickTags = ['Football', 'Basketball', 'Analyse', 'Interview', 'Tennis']
+
+const allResults = [
+  {
+    id: '1',
+    image: 'https://images.unsplash.com/photo-1546519638-68e109498ffc?w=200&q=80',
+    category: 'Basketball',
+    categoryColor: '#F97316',
+    type: 'Analyse',
+    title: 'Steve Kerr expulsé, Stephen Curry commet une faute lors de la défaite des Warriors',
+    sub: 'Talent'
+  },
+  {
+    id: '2',
+    image: 'https://images.unsplash.com/photo-1541401154946-62f8d84bd284?w=200&q=80',
+    category: 'F1',
+    categoryColor: '#3B82F6',
+    type: 'Analyse',
+    title: 'Zhou Guanyu troque Ferrari contre Cadillac, débutant en F1, en tant que pilote de réserve',
+    sub: null
+  },
+  {
+    id: '3',
+    image: 'https://images.unsplash.com/photo-1549719386-74dfcbf7dbed?w=200&q=80',
+    category: 'MMA',
+    categoryColor: '#9333EA',
+    type: 'Analyse',
+    title: '10 combats de MMA que nous voulons voir en 2026',
+    sub: null
   }
+]
+
+const searchResults = computed(() => {
+  if (!searchQuery.value.trim()) return []
+  const q = searchQuery.value.toLowerCase()
+  return allResults.filter(r => 
+    r.title.toLowerCase().includes(q) || 
+    r.category.toLowerCase().includes(q) ||
+    r.type.toLowerCase().includes(q)
+  )
+})
+
+const openSearch = () => {
+  showSearch.value = true
+  nextTick(() => searchInput.value?.focus())
+}
+
+const closeSearch = () => {
+  showSearch.value = false
+  searchQuery.value = ''
+}
+
+const handleSearchInput = () => {
+  // reactive via computed
 }
 
 const handleSearch = () => {
   if (searchQuery.value.trim()) {
-    // TODO: Implement search functionality
-    console.log('Searching for:', searchQuery.value)
-    toggleSearch()
+    closeSearch()
   }
 }
 </script>
@@ -125,11 +204,9 @@ const handleSearch = () => {
   height: 72px;
 }
 
-/* Logo */
 .logo {
   display: flex;
   align-items: center;
-  gap: 4px;
   text-decoration: none;
 }
 
@@ -138,7 +215,6 @@ const handleSearch = () => {
   width: auto;
 }
 
-/* Navigation */
 .nav {
   display: flex;
   align-items: center;
@@ -159,56 +235,6 @@ const handleSearch = () => {
   color: #FC602E;
 }
 
-.nav-link-dropdown {
-  display: flex;
-  align-items: center;
-  gap: 6px;
-  cursor: pointer;
-}
-
-/* Dropdown */
-.nav-dropdown {
-  position: relative;
-}
-
-.dropdown-menu {
-  position: absolute;
-  top: 100%;
-  left: 50%;
-  transform: translateX(-50%);
-  margin-top: 16px;
-  min-width: 180px;
-  background: #191D24;
-  border: 1px solid #2B303B;
-  border-radius: 12px;
-  padding: 8px;
-  opacity: 0;
-  visibility: hidden;
-  transition: all 0.2s;
-  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.4);
-}
-
-.nav-dropdown:hover .dropdown-menu {
-  opacity: 1;
-  visibility: visible;
-}
-
-.dropdown-item {
-  display: block;
-  padding: 10px 16px;
-  font-size: 14px;
-  color: #9CA3AF;
-  text-decoration: none;
-  border-radius: 8px;
-  transition: all 0.2s;
-}
-
-.dropdown-item:hover {
-  background: #2B303B;
-  color: #FAFAFA;
-}
-
-/* Search Button */
 .search-btn {
   display: flex;
   align-items: center;
@@ -227,84 +253,169 @@ const handleSearch = () => {
   color: #FAFAFA;
 }
 
-/* Search Overlay */
+/* Search overlay */
 .search-overlay {
   position: fixed;
   inset: 0;
-  background: rgba(16, 19, 24, 0.95);
-  display: flex;
-  align-items: flex-start;
-  justify-content: center;
-  padding-top: 200px;
+  background: rgba(16, 19, 24, 0.97);
   z-index: 200;
+  display: flex;
+  justify-content: center;
+  padding-top: 80px;
 }
 
-.search-container {
+.search-panel {
+  width: 100%;
+  max-width: 720px;
+  padding: 0 20px;
+}
+
+.search-bar-wrapper {
   display: flex;
   align-items: center;
-  gap: 16px;
-  width: 100%;
-  max-width: 600px;
-  padding: 0 20px;
+  gap: 14px;
+  background: #191D24;
+  border: 1px solid #2B303B;
+  border-radius: 12px;
+  padding: 16px 20px;
+  margin-bottom: 32px;
+}
+
+.search-icon-inner {
+  flex-shrink: 0;
 }
 
 .search-input {
   flex: 1;
-  padding: 16px 24px;
-  background: #191D24;
-  border: 2px solid #2B303B;
-  border-radius: 12px;
-  font-size: 18px;
-  color: #FAFAFA;
+  background: transparent;
+  border: none;
   outline: none;
-  transition: border-color 0.2s;
-}
-
-.search-input:focus {
-  border-color: #FC602E;
+  font-size: 16px;
+  color: #FAFAFA;
 }
 
 .search-input::placeholder {
   color: #6B7280;
 }
 
-.search-close {
+.search-section {
+  margin-bottom: 28px;
+}
+
+.search-section-label {
+  font-family: 'Source Sans 3', sans-serif;
+  font-size: 13px;
+  font-weight: 600;
+  color: #6B7280;
+  margin-bottom: 14px;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.search-tags {
   display: flex;
-  align-items: center;
-  justify-content: center;
-  width: 48px;
-  height: 48px;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+
+.search-tag {
+  padding: 8px 18px;
   background: #191D24;
-  border: none;
-  border-radius: 12px;
-  color: #9CA3AF;
+  border: 1px solid #2B303B;
+  border-radius: 999px;
+  font-size: 14px;
+  color: #D1D5DB;
   cursor: pointer;
   transition: all 0.2s;
 }
 
-.search-close:hover {
-  background: #2B303B;
-  color: #FAFAFA;
+.search-tag:hover {
+  background: #FC602E;
+  border-color: #FC602E;
+  color: #fff;
 }
 
-/* Responsive */
-@media (max-width: 1024px) {
-  .header-container {
-    padding: 0 40px;
-  }
-  
-  .nav {
-    gap: 24px;
-  }
+.search-results {
+  display: flex;
+  flex-direction: column;
+  gap: 0;
+}
+
+.search-result-item {
+  display: flex;
+  gap: 16px;
+  padding: 16px 0;
+  border-bottom: 1px solid #1F242D;
+  text-decoration: none;
+  transition: opacity 0.2s;
+}
+
+.search-result-item:hover {
+  opacity: 0.75;
+}
+
+.search-result-item:last-child {
+  border-bottom: none;
+}
+
+.result-img {
+  width: 72px;
+  height: 56px;
+  object-fit: cover;
+  border-radius: 8px;
+  flex-shrink: 0;
+}
+
+.result-content {
+  flex: 1;
+}
+
+.result-tags {
+  display: flex;
+  gap: 8px;
+  margin-bottom: 6px;
+}
+
+.result-tag {
+  padding: 2px 10px;
+  border-radius: 4px;
+  font-size: 11px;
+  font-weight: 700;
+  color: #fff;
+}
+
+.result-tag-type {
+  background: rgba(255,255,255,0.12);
+  color: #D1D5DB;
+}
+
+.result-title {
+  font-family: 'Oswald', sans-serif;
+  font-size: 14px;
+  font-weight: 600;
+  color: #FAFAFA;
+  line-height: 1.35;
+}
+
+.result-sub {
+  font-size: 12px;
+  color: #6B7280;
+  margin-top: 3px;
+}
+
+/* Transition */
+.search-fade-enter-active,
+.search-fade-leave-active {
+  transition: opacity 0.2s ease;
+}
+
+.search-fade-enter-from,
+.search-fade-leave-to {
+  opacity: 0;
 }
 
 @media (max-width: 768px) {
-  .header-container {
-    padding: 0 20px;
-  }
-  
-  .nav {
-    display: none;
-  }
+  .header-container { padding: 0 20px; }
+  .nav { display: none; }
 }
 </style>

@@ -36,7 +36,7 @@
         </div>
         
         <div class="hero-actions">
-          <button class="btn btn-primary">LIRE L'ARTICLE</button>
+          <RouterLink to="/article/hero-1" class="btn btn-primary">LIRE L'ARTICLE</RouterLink>
           <button class="btn btn-secondary">
             <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
               <path d="M4 2L13.33 8L4 14V2Z" stroke="#FAFAFA" stroke-width="1.33" stroke-linecap="round" stroke-linejoin="round"/>
@@ -54,7 +54,7 @@
       <div class="articles-grid">
         <!-- Featured Article (Large) -->
         <article class="featured-article">
-          <div class="article-card">
+          <RouterLink to="/article/featured-1" class="article-card">
             <img 
               src="https://images.unsplash.com/photo-1579952363873-27f3bade9f55?w=900&q=80" 
               alt="Finale Champions League"
@@ -70,12 +70,12 @@
                 Une analyse approfondie de la façon dont deux philosophies de jeu contrastées se sont affrontées lors de la plus grande finale de l'histoire du tournoi.
               </p>
             </div>
-          </div>
+          </RouterLink>
         </article>
 
         <!-- Sidebar Articles -->
         <div class="sidebar-articles">
-          <article class="sidebar-article" v-for="(article, index) in sidebarArticles" :key="index">
+          <RouterLink :to="`/article/${article.id}`" class="sidebar-article" v-for="(article, index) in sidebarArticles" :key="index">
             <div class="sidebar-article-image">
               <img :src="article.image" :alt="article.title" />
             </div>
@@ -84,7 +84,7 @@
               <h4>{{ article.title }}</h4>
               <p class="article-time">Il y a {{ article.time }}</p>
             </div>
-          </article>
+          </RouterLink>
         </div>
       </div>
     </section>
@@ -97,7 +97,7 @@
         <!-- Articles Grid -->
         <div class="analysis-main">
           <div class="analysis-grid">
-            <article class="analysis-card" v-for="(item, index) in analysisArticles" :key="index">
+            <RouterLink :to="`/article/${item.id}`" class="analysis-card" v-for="(item, index) in analysisArticles" :key="index">
               <div class="analysis-image">
                 <img :src="item.image" :alt="item.title" />
                 <span class="analysis-badge" :class="item.badgeClass">{{ item.category }}</span>
@@ -115,7 +115,7 @@
                   <span>{{ item.author }}</span>
                 </div>
               </div>
-            </article>
+            </RouterLink>
           </div>
         </div>
 
@@ -187,6 +187,7 @@ import { RouterLink } from 'vue-router'
 
 const sidebarArticles = ref([
   {
+    id: 'sidebar-1',
     image: 'https://images.unsplash.com/photo-1546519638-68e109498ffc?w=400&q=80',
     category: 'Basketball',
     categoryClass: 'cat-basketball',
@@ -194,6 +195,7 @@ const sidebarArticles = ref([
     time: '2h'
   },
   {
+    id: 'sidebar-2',
     image: 'https://images.unsplash.com/photo-1541401154946-62f8d84bd284?w=400&q=80',
     category: 'F1',
     categoryClass: 'cat-f1',
@@ -201,6 +203,7 @@ const sidebarArticles = ref([
     time: '3h'
   },
   {
+    id: 'sidebar-3',
     image: 'https://images.unsplash.com/photo-1549719386-74dfcbf7dbed?w=400&q=80',
     category: 'MMA',
     categoryClass: 'cat-mma',
@@ -211,6 +214,7 @@ const sidebarArticles = ref([
 
 const analysisArticles = ref([
   {
+    id: 'analysis-1',
     image: 'https://images.unsplash.com/photo-1546519638-68e109498ffc?w=600&q=80',
     category: 'BASKETBALL',
     badgeClass: 'badge-basketball',
@@ -220,6 +224,7 @@ const analysisArticles = ref([
     author: 'Paul Bernard'
   },
   {
+    id: 'analysis-2',
     image: 'https://images.unsplash.com/photo-1622279457486-62bcc26ba4d3?w=600&q=80',
     category: 'TENNIS',
     badgeClass: 'badge-tennis',
@@ -229,6 +234,7 @@ const analysisArticles = ref([
     author: 'Sophie Durand'
   },
   {
+    id: 'analysis-3',
     image: 'https://images.unsplash.com/photo-1541401154946-62f8d84bd284?w=600&q=80',
     category: 'FORMULE 1',
     badgeClass: 'badge-f1',
@@ -238,6 +244,7 @@ const analysisArticles = ref([
     author: 'Lucas Petit'
   },
   {
+    id: 'analysis-4',
     image: 'https://images.unsplash.com/photo-1517466787929-bc90951d0974?w=600&q=80',
     category: 'RUGBY',
     badgeClass: 'badge-rugby',
@@ -458,6 +465,9 @@ const sports = ref([
   height: 450px;
   border-radius: 16px;
   overflow: hidden;
+  display: block;
+  text-decoration: none;
+  color: inherit;
 }
 
 .article-image {
@@ -537,6 +547,8 @@ const sports = ref([
   border-radius: 12px;
   cursor: pointer;
   transition: all 0.3s;
+  text-decoration: none;
+  color: inherit;
 }
 
 .sidebar-article:hover {
@@ -626,6 +638,9 @@ const sports = ref([
   overflow: hidden;
   cursor: pointer;
   transition: all 0.3s;
+  text-decoration: none;
+  color: inherit;
+  display: block;
 }
 
 .analysis-card:hover {

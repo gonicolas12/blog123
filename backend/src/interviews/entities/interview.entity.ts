@@ -1,4 +1,5 @@
-import { Entity, Column, PrimaryGeneratedColumn, CreateDateColumn } from 'typeorm';
+import { Entity, Column, PrimaryGeneratedColumn, CreateDateColumn, UpdateDateColumn, ManyToOne, JoinColumn } from 'typeorm';
+import { User } from '../../users/entities/user.entity';
 
 @Entity('interviews')
 export class Interview {
@@ -26,6 +27,16 @@ export class Interview {
   @Column({ default: false })
   published: boolean;
 
+  @ManyToOne(() => User, { eager: true, nullable: true })
+  @JoinColumn({ name: 'authorId' })
+  author: User;
+
+  @Column({ nullable: true })
+  authorId: string;
+
   @CreateDateColumn()
   createdAt: Date;
+
+  @UpdateDateColumn()
+  updatedAt: Date;
 }
