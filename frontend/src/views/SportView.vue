@@ -1,13 +1,5 @@
 <template>
   <div class="sport-page">
-    <!-- Header section -->
-    <section class="sport-header">
-      <div class="sport-header-inner">
-        <h1 class="sport-page-title">Couverture sportive</h1>
-        <p class="sport-page-sub">Découvrez notre couverture complète de tous les sports majeurs. Filtrer par catégorie pour trouver les histoires qui comptent le plus pour vous.</p>
-      </div>
-    </section>
-
     <!-- Main -->
     <div class="sport-main">
       <!-- Sidebar filters -->
@@ -107,14 +99,10 @@ const routeSlugMap = {
 const resolveSlug = (param) => routeSlugMap[param?.toLowerCase()] ?? 'all'
 
 const activeSport = ref(resolveSlug(route.params.sport))
-const activeType = ref(route.query.type?.toLowerCase() ?? 'all')
+const activeType = ref('all')
 
 watch(() => route.params.sport, (val) => {
   activeSport.value = resolveSlug(val)
-})
-
-watch(() => route.query.type, (val) => {
-  activeType.value = val?.toLowerCase() ?? 'all'
 })
 
 const sportFilters = ref([
