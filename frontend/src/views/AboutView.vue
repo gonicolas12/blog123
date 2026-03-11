@@ -126,7 +126,7 @@ const team = ref([
     name: 'Saman Paul Alex MEA',
     role: 'Designer',
     bio: 'Saman est un designer talentueux avec une passion pour le sport. Il est responsable de l\'identité visuelle du site et de la création d\'une expérience utilisateur attrayante et intuitive.',
-    avatar: 'https://images.unsplash.com/photo-1500648767791-00dcc994a43e?w=200&q=80'
+    avatar: 'https://media.licdn.com/dms/image/v2/D4E03AQGkkSDSlBMUfQ/profile-displayphoto-scale_200_200/B4EZpRBtYJIUAY-/0/1762295994578?e=1775088000&v=beta&t=xrEnUep4AVSgc1pJE3vM7sWH9ly_pLV8bdXBqLlvJN4'
   },
   {
     name: 'Daurate KOUADIO',
