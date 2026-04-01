@@ -181,9 +181,9 @@
   </div>
 </template>
 
-import { ref, onMounted } from 'vue'
+<script setup>
+import { ref } from 'vue'
 import { RouterLink } from 'vue-router'
-import api from '@/services/api'
 
 const sidebarArticles = ref([
   {
@@ -264,50 +264,44 @@ const trends = ref([
 ])
 
 const sports = ref([
-  { name: 'FOOTBALL', slug: 'foot', color: '#10B981', icon: '⚽' },
-  { name: 'BASKETBALL', slug: 'basket', color: '#F97316', icon: '🏀' },
-  { name: 'TENNIS', slug: 'tennis', color: '#EAB308', icon: '🎾' },
-  { name: 'RUGBY', slug: 'rugby', color: '#DC2626', icon: '🏉' },
-  { name: 'FORMULE 1', slug: 'f1', color: '#3B82F6', icon: '🏎️' },
-  { name: 'MMA', slug: 'mma', color: '#9333EA', icon: '🥊' }
-])
-
-// Charger les articles de la BDD et les ajouter aux listes existantes
-onMounted(async () => {
-  try {
-    const response = await api.get('/articles')
-    const articles = response.data
-
-    // Ajouter les articles de la BDD à la sidebar
-    articles.slice(0, 3).forEach(article => {
-      sidebarArticles.value.push({
-        id: article.id,
-        image: article.imageUrl,
-        category: article.category?.name || 'Sport',
-        categoryClass: `cat-${article.category?.slug || 'sport'}`,
-        title: article.title,
-        time: '1h'
-      })
-    })
-
-    // Ajouter les articles de la BDD à la grille analyse
-    articles.slice(3, 7).forEach(article => {
-      analysisArticles.value.push({
-        id: article.id,
-        image: article.imageUrl,
-        category: article.category?.name?.toUpperCase() || 'SPORT',
-        badgeClass: `badge-${article.category?.slug || 'sport'}`,
-        title: article.title,
-        excerpt: article.excerpt,
-        hours: 1,
-        author: `${article.author?.firstName} ${article.author?.lastName}`
-      })
-    })
-
-  } catch (error) {
-    console.error('Erreur chargement articles BDD:', error)
+  { 
+    name: 'FOOTBALL', 
+    slug: 'foot', 
+    color: '#10B981',
+    icon: '⚽'
+  },
+  { 
+    name: 'BASKETBALL', 
+    slug: 'basket', 
+    color: '#F97316',
+    icon: '🏀'
+  },
+  { 
+    name: 'TENNIS', 
+    slug: 'tennis', 
+    color: '#EAB308',
+    icon: '🎾'
+  },
+  { 
+    name: 'RUGBY', 
+    slug: 'rugby', 
+    color: '#DC2626',
+    icon: '🏉'
+  },
+  { 
+    name: 'FORMULE 1', 
+    slug: 'f1', 
+    color: '#3B82F6',
+    icon: '🏎️'
+  },
+  { 
+    name: 'MMA', 
+    slug: 'mma', 
+    color: '#9333EA',
+    icon: '🥊'
   }
-})
+])
+</script>
 
 <style scoped>
 .home-page {
