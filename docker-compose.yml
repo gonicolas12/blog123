@@ -16,6 +16,7 @@ services:
       - DB_PASSWORD=tonMotDePasse
       - DB_DATABASE=blog123
       - JWT_SECRET=unSecretJWTTresLong2024!
+      - DB_SYNCHRONIZE=true
 
   frontend:
     build:

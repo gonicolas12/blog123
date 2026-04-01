@@ -21,7 +21,7 @@ import { CommentsModule } from './comments/comments.module';
       password: process.env.DB_PASSWORD || '',
       database: process.env.DB_DATABASE || 'blog123',
       entities: [__dirname + '/**/*.entity{.ts,.js}'],
-      synchronize: process.env.NODE_ENV !== 'production',
+      synchronize: process.env.DB_SYNCHRONIZE === 'true',
       logging: process.env.NODE_ENV === 'development',
     }),
     ArticlesModule,
@@ -32,4 +32,4 @@ import { CommentsModule } from './comments/comments.module';
     CommentsModule,
   ],
 })
-export class AppModule {}
+export class AppModule { }
