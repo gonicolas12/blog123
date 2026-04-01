@@ -102,43 +102,43 @@ const team = ref([
     name: 'Shemsedine MALAGOUEN',
     role: 'Chef de projet',
     bio: 'Shemsedine est un passionné de sport avec une expérience dans la gestion de projets sportifs. Il est responsable de la coordination de l\'équipe et de la stratégie éditoriale du site.',
-    avatar: 'https://media.licdn.com/dms/image/v2/D4D03AQEmvdWJ3xXyOQ/profile-displayphoto-shrink_800_800/B4DZbtdKr3HEAc-/0/1747740570484?e=1773273600&v=beta&t=zg9CuO77NKd5l13TG6Wnrt5uF4VmizARZ9mNveXdeJA'
+    avatar: '/assets/images/shemsedine.jpeg'
   },
   {
     name: 'Brenn MAKOUYA',
     role: 'Développeur',
     bio: 'Brenn est un développeur passionné par les technologies web et mobiles. Il contribue à l\'architecture technique du site et à l\'optimisation de l\'expérience utilisateur.',
-    avatar: 'https://media.licdn.com/dms/image/v2/D4D03AQFb1n3PUlhzGg/profile-displayphoto-crop_800_800/B4DZxw2avtJcAI-/0/1771419845789?e=1773273600&v=beta&t=-v-hVKwJ2UqTHkg3Wq5KE9vxSLYOJp0-E4GC4ZENyRI'
+    avatar: '/assets/images/brenn.jpeg'
   },
   {
     name: 'Nicolas GOUY',
     role: 'Spécialiste Data & AI',
     bio: 'Nicolas est un expert en data et intelligence artificielle, spécialisé dans l\'analyse des performances sportives et la création de modèles prédictifs.',
-    avatar: 'https://media.licdn.com/dms/image/v2/D5603AQEjbjff4btC_w/profile-displayphoto-shrink_800_800/B56ZSIg9jpHsAg-/0/1737457130228?e=1773273600&v=beta&t=zmBRWbLCB3rmVUFrIqmsHI_TJ6T96jirSiGvijjWGBQ'
+    avatar: '/assets/images/nicolas.jpeg'
   },
   {
     name: 'Josué ADAMI',
     role: 'Spécialiste Data & AI',
     bio: 'Josué est un spécialiste en data et intelligence artificielle, avec une expertise dans l\'analyse des données sportives et la création de modèles prédictifs.',
-    avatar: 'https://media.licdn.com/dms/image/v2/D5603AQG6zmbexZAW_Q/profile-displayphoto-shrink_800_800/B56ZXhvWrqHQAc-/0/1743249043816?e=1773273600&v=beta&t=u3qIlWA9Ys9S2Nzpz9VZmIwm6iLdJzNjUhKRegwBc3E'
+    avatar: '/assets/images/josue.jpeg'
   },
   {
     name: 'Saman Paul Alex MEA',
     role: 'Designer',
     bio: 'Saman est un designer talentueux avec une passion pour le sport. Il est responsable de l\'identité visuelle du site et de la création d\'une expérience utilisateur attrayante et intuitive.',
-    avatar: 'https://media.licdn.com/dms/image/v2/D4E03AQGkkSDSlBMUfQ/profile-displayphoto-scale_200_200/B4EZpRBtYJIUAY-/0/1762295994578?e=1775088000&v=beta&t=xrEnUep4AVSgc1pJE3vM7sWH9ly_pLV8bdXBqLlvJN4'
+    avatar: '/assets/images/paul-alex.jpeg'
   },
   {
     name: 'Daurate KOUADIO',
     role: 'Designer',
     bio: 'Daurate est un designer passionné par l\'expérience utilisateur et l\'identité visuelle du site. Il contribue à la création d\'une interface intuitive et attrayante.',
-    avatar: 'https://media.licdn.com/dms/image/v2/D5603AQFDbOIBhfikiw/profile-displayphoto-shrink_800_800/profile-displayphoto-shrink_800_800/0/1684767873823?e=1773273600&v=beta&t=C3UxQpdZc7jprR6Kln6brT42Xo4WDY4uxNm_cjAy3gQ'
+    avatar: '/assets/images/daurate.jpeg'
   },
   {
     name: 'Guillaume MARDINLI',
     role: 'Spécialiste Infrastructure',
     bio: 'Guillaume est un expert en infrastructure technique, spécialisé dans l\'optimisation des performances du site et la gestion des ressources.',
-    avatar: 'https://media.licdn.com/dms/image/v2/D4E03AQF24gJSusSLEg/profile-displayphoto-shrink_800_800/profile-displayphoto-shrink_800_800/0/1727360127849?e=1773273600&v=beta&t=jfhMdj76pZo8Otm5G8Qs1NaQ_zeDFKn-Z9rHcs2_mGM'
+    avatar: '/assets/images/guillaume.jpeg'
   }
 ])
 </script>
