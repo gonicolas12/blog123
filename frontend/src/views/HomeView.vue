@@ -182,79 +182,24 @@
 </template>
 
 <script setup>
-import { ref } from 'vue'
+import { ref, onMounted } from 'vue'
 import { RouterLink } from 'vue-router'
+import { articleService } from '../services/articleService'
 
-const sidebarArticles = ref([
-  {
-    id: 'sidebar-1',
-    image: 'https://images.unsplash.com/photo-1546519638-68e109498ffc?w=400&q=80',
-    category: 'Basketball',
-    categoryClass: 'cat-basketball',
-    title: 'Steve Kerr expulsé, Stephen Curry commet une faute lors de la défaite des Warriors',
-    time: '2h'
-  },
-  {
-    id: 'sidebar-2',
-    image: 'https://images.unsplash.com/photo-1541401154946-62f8d84bd284?w=400&q=80',
-    category: 'F1',
-    categoryClass: 'cat-f1',
-    title: 'Zhou Guanyu troque Ferrari contre Cadillac, débutant en F1, en tant que pilote de réserve',
-    time: '3h'
-  },
-  {
-    id: 'sidebar-3',
-    image: 'https://images.unsplash.com/photo-1549719386-74dfcbf7dbed?w=400&q=80',
-    category: 'MMA',
-    categoryClass: 'cat-mma',
-    title: '10 combats de MMA que nous voulons voir en 2026',
-    time: '4h'
+const sidebarArticles = ref([])
+
+const analysisArticles = ref([])
+
+onMounted(async () => {
+  try {
+    const articles = await articleService.getAll()
+    // Séparer les articles pour la sidebar et l'analyse, ou utiliser tout dans les deux si pas de distinction
+    sidebarArticles.value = articles.slice(0, 3)
+    analysisArticles.value = articles.slice(3, 7)
+  } catch (e) {
+    console.error('Erreur lors du chargement des articles', e)
   }
-])
-
-const analysisArticles = ref([
-  {
-    id: 'analysis-1',
-    image: 'https://images.unsplash.com/photo-1546519638-68e109498ffc?w=600&q=80',
-    category: 'BASKETBALL',
-    badgeClass: 'badge-basketball',
-    title: 'NBA: LeBron James dépasse un nouveau record historique',
-    excerpt: 'Le King continue d\'écrire l\'histoire de la NBA avec cette nouvelle performance légendaire.',
-    hours: 4,
-    author: 'Paul Bernard'
-  },
-  {
-    id: 'analysis-2',
-    image: 'https://images.unsplash.com/photo-1622279457486-62bcc26ba4d3?w=600&q=80',
-    category: 'TENNIS',
-    badgeClass: 'badge-tennis',
-    title: 'Open d\'Australie: Djokovic affrontera Sinner en finale',
-    excerpt: 'Une finale de rêve entre le champion serbe et la révélation italienne.',
-    hours: 5,
-    author: 'Sophie Durand'
-  },
-  {
-    id: 'analysis-3',
-    image: 'https://images.unsplash.com/photo-1541401154946-62f8d84bd284?w=600&q=80',
-    category: 'FORMULE 1',
-    badgeClass: 'badge-f1',
-    title: 'Verstappen : \'Cette saison sera la plus compétitive\'',
-    excerpt: 'Le triple champion du monde s\'attend à une lutte acharnée pour le titre.',
-    hours: 6,
-    author: 'Lucas Petit'
-  },
-  {
-    id: 'analysis-4',
-    image: 'https://images.unsplash.com/photo-1517466787929-bc90951d0974?w=600&q=80',
-    category: 'RUGBY',
-    badgeClass: 'badge-rugby',
-    title: 'Six Nations: La France favorite pour le Grand Chelem',
-    excerpt: 'Les Bleus arrivent en favoris de la compétition après une préparation exemplaire.',
-    hours: 7,
-    author: 'Antoine Moreau'
-  }
-])
-
+})
 const trends = ref([
   { title: 'Mbappé buteur face à l\'OM', discussions: '12.1K' },
   { title: 'Real Madrid en forme', discussions: '8.2K' },
