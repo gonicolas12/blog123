@@ -187,19 +187,37 @@ import { RouterLink } from 'vue-router'
 import { articleService } from '../services/articleService'
 
 const sidebarArticles = ref([])
-
 const analysisArticles = ref([])
 
 onMounted(async () => {
   try {
     const articles = await articleService.getAll()
-    // Séparer les articles pour la sidebar et l'analyse, ou utiliser tout dans les deux si pas de distinction
-    sidebarArticles.value = articles.slice(0, 3)
-    analysisArticles.value = articles.slice(3, 7)
+
+    sidebarArticles.value = articles.slice(0, 3).map(article => ({
+      id: article.id,
+      image: article.imageUrl,
+      category: article.category?.name || 'Sport',
+      categoryClass: `cat-${article.category?.slug}`,
+      title: article.title,
+      time: '1h'
+    }))
+
+    analysisArticles.value = articles.slice(3, 7).map(article => ({
+      id: article.id,
+      image: article.imageUrl,
+      category: article.category?.name?.toUpperCase() || 'SPORT',
+      badgeClass: `badge-${article.category?.slug}`,
+      title: article.title,
+      excerpt: article.excerpt,
+      hours: 1,
+      author: `${article.author?.firstName} ${article.author?.lastName}`
+    }))
+
   } catch (e) {
-    console.error('Erreur lors du chargement des articles', e)
+    console.error('Erreur chargement articles', e)
   }
 })
+
 const trends = ref([
   { title: 'Mbappé buteur face à l\'OM', discussions: '12.1K' },
   { title: 'Real Madrid en forme', discussions: '8.2K' },
@@ -209,42 +227,12 @@ const trends = ref([
 ])
 
 const sports = ref([
-  { 
-    name: 'FOOTBALL', 
-    slug: 'foot', 
-    color: '#10B981',
-    icon: '⚽'
-  },
-  { 
-    name: 'BASKETBALL', 
-    slug: 'basket', 
-    color: '#F97316',
-    icon: '🏀'
-  },
-  { 
-    name: 'TENNIS', 
-    slug: 'tennis', 
-    color: '#EAB308',
-    icon: '🎾'
-  },
-  { 
-    name: 'RUGBY', 
-    slug: 'rugby', 
-    color: '#DC2626',
-    icon: '🏉'
-  },
-  { 
-    name: 'FORMULE 1', 
-    slug: 'f1', 
-    color: '#3B82F6',
-    icon: '🏎️'
-  },
-  { 
-    name: 'MMA', 
-    slug: 'mma', 
-    color: '#9333EA',
-    icon: '🥊'
-  }
+  { name: 'FOOTBALL', slug: 'foot', color: '#10B981', icon: '⚽' },
+  { name: 'BASKETBALL', slug: 'basket', color: '#F97316', icon: '🏀' },
+  { name: 'TENNIS', slug: 'tennis', color: '#EAB308', icon: '🎾' },
+  { name: 'RUGBY', slug: 'rugby', color: '#DC2626', icon: '🏉' },
+  { name: 'FORMULE 1', slug: 'f1', color: '#3B82F6', icon: '🏎️' },
+  { name: 'MMA', slug: 'mma', color: '#9333EA', icon: '🥊' }
 ])
 </script>
 
@@ -254,7 +242,6 @@ const sports = ref([
   color: #FAFAFA;
 }
 
-/* Hero Section */
 .hero-section {
   position: relative;
   height: 630px;
@@ -382,7 +369,6 @@ const sports = ref([
   background: rgba(59, 64, 72, 0.9);
 }
 
-/* Latest News Section */
 .latest-news-section {
   padding: 60px 80px;
 }
@@ -477,7 +463,6 @@ const sports = ref([
   color: #D1D5DB;
 }
 
-/* Sidebar Articles */
 .sidebar-articles {
   display: flex;
   flex-direction: column;
@@ -545,6 +530,21 @@ const sports = ref([
   color: #FAFAFA;
 }
 
+.cat-football {
+  background: #10B981;
+  color: #FAFAFA;
+}
+
+.cat-tennis {
+  background: #EAB308;
+  color: #FAFAFA;
+}
+
+.cat-rugby {
+  background: #DC2626;
+  color: #FAFAFA;
+}
+
 .sidebar-article-content h4 {
   font-family: 'Oswald', sans-serif;
   font-size: 15px;
@@ -558,7 +558,6 @@ const sports = ref([
   color: #6B7280;
 }
 
-/* Analysis Section */
 .analysis-section {
   padding: 60px 80px;
   background: #0D0F13;
@@ -633,6 +632,14 @@ const sports = ref([
   background: #DC2626;
 }
 
+.badge-football {
+  background: #10B981;
+}
+
+.badge-mma {
+  background: #9333EA;
+}
+
 .analysis-card-content {
   padding: 20px;
 }
@@ -661,7 +668,6 @@ const sports = ref([
   color: #6B7280;
 }
 
-/* Sidebar - Tendances */
 .analysis-sidebar {
   display: flex;
   flex-direction: column;
@@ -724,7 +730,6 @@ const sports = ref([
   color: #6B7280;
 }
 
-/* Newsletter */
 .newsletter-card {
   background: linear-gradient(135deg, #DC2626 0%, #B91C1C 100%);
   border-radius: 12px;
@@ -807,7 +812,6 @@ const sports = ref([
   background: #E5541F;
 }
 
-/* Explore Section */
 .explore-section {
   padding: 60px 80px 80px;
 }
@@ -848,76 +852,27 @@ const sports = ref([
   color: #FAFAFA;
 }
 
-/* Responsive */
 @media (max-width: 1280px) {
-  .articles-grid {
-    grid-template-columns: 1fr 350px;
-  }
-  
-  .analysis-content-wrapper {
-    grid-template-columns: 1fr 300px;
-  }
-  
-  .sports-grid {
-    grid-template-columns: repeat(3, 1fr);
-  }
-  
-  .latest-news-section,
-  .analysis-section,
-  .explore-section {
-    padding-left: 40px;
-    padding-right: 40px;
-  }
+  .articles-grid { grid-template-columns: 1fr 350px; }
+  .analysis-content-wrapper { grid-template-columns: 1fr 300px; }
+  .sports-grid { grid-template-columns: repeat(3, 1fr); }
+  .latest-news-section, .analysis-section, .explore-section { padding-left: 40px; padding-right: 40px; }
 }
 
 @media (max-width: 1024px) {
-  .articles-grid {
-    grid-template-columns: 1fr;
-  }
-  
-  .analysis-content-wrapper {
-    grid-template-columns: 1fr;
-  }
-  
-  .analysis-grid {
-    grid-template-columns: repeat(2, 1fr);
-  }
+  .articles-grid { grid-template-columns: 1fr; }
+  .analysis-content-wrapper { grid-template-columns: 1fr; }
+  .analysis-grid { grid-template-columns: repeat(2, 1fr); }
 }
 
 @media (max-width: 768px) {
-  .hero-section {
-    height: 500px;
-  }
-  
-  .hero-content {
-    padding: 120px 20px 0;
-    max-width: 100%;
-  }
-  
-  .hero-title {
-    font-size: 32px;
-  }
-  
-  .hero-actions {
-    flex-direction: column;
-  }
-  
-  .btn {
-    width: 100%;
-  }
-  
-  .latest-news-section,
-  .analysis-section,
-  .explore-section {
-    padding: 40px 20px;
-  }
-  
-  .sports-grid {
-    grid-template-columns: repeat(2, 1fr);
-  }
-  
-  .analysis-grid {
-    grid-template-columns: 1fr;
-  }
+  .hero-section { height: 500px; }
+  .hero-content { padding: 120px 20px 0; max-width: 100%; }
+  .hero-title { font-size: 32px; }
+  .hero-actions { flex-direction: column; }
+  .btn { width: 100%; }
+  .latest-news-section, .analysis-section, .explore-section { padding: 40px 20px; }
+  .sports-grid { grid-template-columns: repeat(2, 1fr); }
+  .analysis-grid { grid-template-columns: 1fr; }
 }
 </style>
