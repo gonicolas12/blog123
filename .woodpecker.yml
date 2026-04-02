@@ -1,0 +1,14 @@
+pipeline:
+  deploy:
+    image: appleboy/drone-ssh
+    settings:
+      host: 192.168.100.20
+      username: root
+      key:
+        from_secret: SSH_DEPLOY_KEY
+      port: 22
+      script:
+        - cd /home/blog123/blog123
+        - git pull
+        - docker compose up -d --build
+        - docker image prune -f
