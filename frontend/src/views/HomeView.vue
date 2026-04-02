@@ -77,12 +77,12 @@
         <div class="sidebar-articles">
           <RouterLink :to="`/article/${article.id}`" class="sidebar-article" v-for="(article, index) in sidebarArticles" :key="index">
             <div class="sidebar-article-image">
-              <img :src="article.image" :alt="article.title" />
+              <img :src="article.imageUrl || 'https://images.unsplash.com/photo-1541701494587-cb58502866ab?w=600&q=80'" :alt="article.title" />
             </div>
             <div class="sidebar-article-content">
-              <span class="article-category" :class="article.categoryClass">{{ article.category }}</span>
+              <span class="article-category" :class="article.categoryClass">{{ article.category?.name || article.category }}</span>
               <h4>{{ article.title }}</h4>
-              <p class="article-time">Il y a {{ article.time }}</p>
+              <p class="article-time">{{ article.createdAt ? `Il y a ${new Date(article.createdAt).toLocaleDateString('fr-FR')}` : '' }}</p>
             </div>
           </RouterLink>
         </div>
@@ -99,8 +99,8 @@
           <div class="analysis-grid">
             <RouterLink :to="`/article/${item.id}`" class="analysis-card" v-for="(item, index) in analysisArticles" :key="index">
               <div class="analysis-image">
-                <img :src="item.image" :alt="item.title" />
-                <span class="analysis-badge" :class="item.badgeClass">{{ item.category }}</span>
+                <img :src="item.imageUrl || 'https://images.unsplash.com/photo-1541701494587-cb58502866ab?w=600&q=80'" :alt="item.title" />
+                <span class="analysis-badge" :class="item.badgeClass">{{ item.category?.name || item.category }}</span>
               </div>
               <div class="analysis-card-content">
                 <h3>{{ item.title }}</h3>
@@ -110,9 +110,9 @@
                     <circle cx="8" cy="8" r="6.67" stroke="#6B7280" stroke-width="1.33"/>
                     <path d="M8 4V8L10.67 9.33" stroke="#6B7280" stroke-width="1.33" stroke-linecap="round"/>
                   </svg>
-                  <span>Il y a {{ item.hours }}h</span>
+                  <span>{{ item.createdAt ? `Il y a ${new Date(item.createdAt).toLocaleDateString('fr-FR')}` : '' }}</span>
                   <span class="separator">•</span>
-                  <span>{{ item.author }}</span>
+                  <span>{{ item.author?.name || item.author || '' }}</span>
                 </div>
               </div>
             </RouterLink>
