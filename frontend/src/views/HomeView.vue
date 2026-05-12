@@ -51,40 +51,50 @@
     <section class="latest-news-section">
       <h2 class="section-title">DERNIÈRES ACTUALITÉS</h2>
       
-      <div class="articles-grid">
-        <!-- Featured Article (Large) -->
+      <div v-if="loading" class="loading-state">Chargement des articles...</div>
+      
+      <div v-else class="articles-grid">
+        <!-- Featured Article (Large) — premier article de la BDD ou fallback statique -->
         <article class="featured-article">
-          <RouterLink to="/article/featured-1" class="article-card">
+          <RouterLink :to="featuredArticle ? `/article/${featuredArticle.id}` : '/article/featured-1'" class="article-card">
             <img 
-              src="https://images.unsplash.com/photo-1579952363873-27f3bade9f55?w=900&q=80" 
-              alt="Finale Champions League"
+              :src="featuredArticle?.imageUrl || 'https://images.unsplash.com/photo-1579952363873-27f3bade9f55?w=900&q=80'" 
+              :alt="featuredArticle?.title || 'Finale Champions League'"
               class="article-image"
             />
             <div class="article-overlay">
               <div class="article-tags">
-                <span class="tag tag-category tag-foot">FOOT</span>
-                <span class="tag tag-type">Analyses</span>
+                <span class="tag tag-category tag-foot">{{ featuredArticle?.category?.name || 'SPORT' }}</span>
+                <span class="tag tag-type">À la une</span>
               </div>
-              <h3 class="article-title">Finale de la Ligue des Champions : la bataille tactique qui a défini une génération</h3>
-              <p class="article-excerpt">
-                Une analyse approfondie de la façon dont deux philosophies de jeu contrastées se sont affrontées lors de la plus grande finale de l'histoire du tournoi.
-              </p>
+              <h3 class="article-title">{{ featuredArticle?.title || 'Finale de la Ligue des Champions : la bataille tactique qui a défini une génération' }}</h3>
+              <p class="article-excerpt">{{ featuredArticle?.excerpt || 'Une analyse approfondie de la façon dont deux philosophies de jeu contrastées se sont affrontées.' }}</p>
             </div>
           </RouterLink>
         </article>
 
         <!-- Sidebar Articles -->
         <div class="sidebar-articles">
-          <RouterLink :to="`/article/${article.id}`" class="sidebar-article" v-for="(article, index) in sidebarArticles" :key="index">
+          <RouterLink
+            v-for="article in sidebarArticles"
+            :key="article.id"
+            :to="`/article/${article.id}`"
+            class="sidebar-article"
+          >
             <div class="sidebar-article-image">
               <img :src="article.imageUrl || 'https://images.unsplash.com/photo-1541701494587-cb58502866ab?w=600&q=80'" :alt="article.title" />
             </div>
             <div class="sidebar-article-content">
-              <span class="article-category" :class="article.categoryClass">{{ article.category?.name || article.category }}</span>
+              <span v-if="article.category?.name" class="article-category">{{ article.category.name }}</span>
               <h4>{{ article.title }}</h4>
-              <p class="article-time">{{ article.createdAt ? `Il y a ${new Date(article.createdAt).toLocaleDateString('fr-FR')}` : '' }}</p>
+              <p class="article-time">{{ formatDate(article.createdAt) }}</p>
             </div>
           </RouterLink>
+
+          <!-- Fallback si pas assez d'articles -->
+          <div v-if="sidebarArticles.length === 0" class="empty-sidebar">
+            Aucun article récent.
+          </div>
         </div>
       </div>
     </section>
@@ -96,11 +106,19 @@
       <div class="analysis-content-wrapper">
         <!-- Articles Grid -->
         <div class="analysis-main">
-          <div class="analysis-grid">
-            <RouterLink :to="`/article/${item.id}`" class="analysis-card" v-for="(item, index) in analysisArticles" :key="index">
+          <div v-if="analysisArticles.length === 0 && !loading" class="empty-analysis">
+            Aucun article pour le moment.
+          </div>
+          <div v-else class="analysis-grid">
+            <RouterLink
+              v-for="item in analysisArticles"
+              :key="item.id"
+              :to="`/article/${item.id}`"
+              class="analysis-card"
+            >
               <div class="analysis-image">
                 <img :src="item.imageUrl || 'https://images.unsplash.com/photo-1541701494587-cb58502866ab?w=600&q=80'" :alt="item.title" />
-                <span class="analysis-badge" :class="item.badgeClass">{{ item.category?.name || item.category }}</span>
+                <span v-if="item.category?.name" class="analysis-badge">{{ item.category.name }}</span>
               </div>
               <div class="analysis-card-content">
                 <h3>{{ item.title }}</h3>
@@ -110,9 +128,9 @@
                     <circle cx="8" cy="8" r="6.67" stroke="#6B7280" stroke-width="1.33"/>
                     <path d="M8 4V8L10.67 9.33" stroke="#6B7280" stroke-width="1.33" stroke-linecap="round"/>
                   </svg>
-                  <span>{{ item.createdAt ? `Il y a ${new Date(item.createdAt).toLocaleDateString('fr-FR')}` : '' }}</span>
-                  <span class="separator">•</span>
-                  <span>{{ item.author?.name || item.author || '' }}</span>
+                  <span>{{ formatDate(item.createdAt) }}</span>
+                  <span v-if="authorName(item)" class="separator">•</span>
+                  <span v-if="authorName(item)">{{ authorName(item) }}</span>
                 </div>
               </div>
             </RouterLink>
@@ -182,24 +200,50 @@
 </template>
 
 <script setup>
-import { ref, onMounted } from 'vue'
+import { ref, computed, onMounted } from 'vue'
 import { RouterLink } from 'vue-router'
 import { articleService } from '../services/articleService'
 
-const sidebarArticles = ref([])
+const allArticles = ref([])
+const loading = ref(false)
 
-const analysisArticles = ref([])
+// Article mis en avant = le plus récent
+const featuredArticle = computed(() => allArticles.value[0] || null)
+
+// Sidebar = articles 2 à 4
+const sidebarArticles = computed(() => allArticles.value.slice(1, 4))
+
+// Analyses = articles 4 à 8
+const analysisArticles = computed(() => allArticles.value.slice(4, 8))
+
+// Affiche proprement le nom de l'auteur
+const authorName = (article) => {
+  if (!article.author) return ''
+  const { firstName, lastName, email } = article.author
+  if (firstName || lastName) return `${firstName || ''} ${lastName || ''}`.trim()
+  return email || ''
+}
+
+const formatDate = (date) => {
+  if (!date) return ''
+  return new Date(date).toLocaleDateString('fr-FR', {
+    year: 'numeric',
+    month: 'long',
+    day: 'numeric'
+  })
+}
 
 onMounted(async () => {
+  loading.value = true
   try {
-    const articles = await articleService.getAll()
-    // Séparer les articles pour la sidebar et l'analyse, ou utiliser tout dans les deux si pas de distinction
-    sidebarArticles.value = articles.slice(0, 3)
-    analysisArticles.value = articles.slice(3, 7)
+    allArticles.value = await articleService.getAll()
   } catch (e) {
     console.error('Erreur lors du chargement des articles', e)
+  } finally {
+    loading.value = false
   }
 })
+
 const trends = ref([
   { title: 'Mbappé buteur face à l\'OM', discussions: '12.1K' },
   { title: 'Real Madrid en forme', discussions: '8.2K' },
@@ -209,42 +253,12 @@ const trends = ref([
 ])
 
 const sports = ref([
-  { 
-    name: 'FOOTBALL', 
-    slug: 'foot', 
-    color: '#10B981',
-    icon: '⚽'
-  },
-  { 
-    name: 'BASKETBALL', 
-    slug: 'basket', 
-    color: '#F97316',
-    icon: '🏀'
-  },
-  { 
-    name: 'TENNIS', 
-    slug: 'tennis', 
-    color: '#EAB308',
-    icon: '🎾'
-  },
-  { 
-    name: 'RUGBY', 
-    slug: 'rugby', 
-    color: '#DC2626',
-    icon: '🏉'
-  },
-  { 
-    name: 'FORMULE 1', 
-    slug: 'f1', 
-    color: '#3B82F6',
-    icon: '🏎️'
-  },
-  { 
-    name: 'MMA', 
-    slug: 'mma', 
-    color: '#9333EA',
-    icon: '🥊'
-  }
+  { name: 'FOOTBALL', slug: 'foot', color: '#10B981', icon: '⚽' },
+  { name: 'BASKETBALL', slug: 'basket', color: '#F97316', icon: '🏀' },
+  { name: 'TENNIS', slug: 'tennis', color: '#EAB308', icon: '🎾' },
+  { name: 'RUGBY', slug: 'rugby', color: '#DC2626', icon: '🏉' },
+  { name: 'FORMULE 1', slug: 'f1', color: '#3B82F6', icon: '🏎️' },
+  { name: 'MMA', slug: 'mma', color: '#9333EA', icon: '🥊' }
 ])
 </script>
 
@@ -380,6 +394,14 @@ const sports = ref([
 
 .btn-secondary:hover {
   background: rgba(59, 64, 72, 0.9);
+}
+
+/* Loading */
+.loading-state {
+  text-align: center;
+  padding: 60px;
+  color: #6B7280;
+  font-size: 14px;
 }
 
 /* Latest News Section */
@@ -528,20 +550,7 @@ const sports = ref([
   font-weight: 700;
   letter-spacing: 0.5px;
   width: fit-content;
-}
-
-.cat-basketball {
-  background: #DC2626;
-  color: #FAFAFA;
-}
-
-.cat-f1 {
-  background: #3B82F6;
-  color: #FAFAFA;
-}
-
-.cat-mma {
-  background: #9333EA;
+  background: #FC602E;
   color: #FAFAFA;
 }
 
@@ -556,6 +565,13 @@ const sports = ref([
 .article-time {
   font-size: 12px;
   color: #6B7280;
+}
+
+.empty-sidebar {
+  color: #6B7280;
+  font-size: 14px;
+  padding: 20px;
+  text-align: center;
 }
 
 /* Analysis Section */
@@ -575,6 +591,15 @@ const sports = ref([
   display: grid;
   grid-template-columns: repeat(2, 1fr);
   gap: 24px;
+}
+
+.empty-analysis {
+  color: #6B7280;
+  font-size: 14px;
+  padding: 40px;
+  text-align: center;
+  background: #191D24;
+  border-radius: 12px;
 }
 
 .analysis-card {
@@ -615,22 +640,7 @@ const sports = ref([
   font-weight: 700;
   letter-spacing: 0.5px;
   color: #FAFAFA;
-}
-
-.badge-basketball {
-  background: #F97316;
-}
-
-.badge-tennis {
-  background: #22C55E;
-}
-
-.badge-f1 {
-  background: #3B82F6;
-}
-
-.badge-rugby {
-  background: #DC2626;
+  background: #FC602E;
 }
 
 .analysis-card-content {
@@ -853,15 +863,12 @@ const sports = ref([
   .articles-grid {
     grid-template-columns: 1fr 350px;
   }
-  
   .analysis-content-wrapper {
     grid-template-columns: 1fr 300px;
   }
-  
   .sports-grid {
     grid-template-columns: repeat(3, 1fr);
   }
-  
   .latest-news-section,
   .analysis-section,
   .explore-section {
@@ -874,11 +881,9 @@ const sports = ref([
   .articles-grid {
     grid-template-columns: 1fr;
   }
-  
   .analysis-content-wrapper {
     grid-template-columns: 1fr;
   }
-  
   .analysis-grid {
     grid-template-columns: repeat(2, 1fr);
   }
@@ -888,34 +893,27 @@ const sports = ref([
   .hero-section {
     height: 500px;
   }
-  
   .hero-content {
     padding: 120px 20px 0;
     max-width: 100%;
   }
-  
   .hero-title {
     font-size: 32px;
   }
-  
   .hero-actions {
     flex-direction: column;
   }
-  
   .btn {
     width: 100%;
   }
-  
   .latest-news-section,
   .analysis-section,
   .explore-section {
     padding: 40px 20px;
   }
-  
   .sports-grid {
     grid-template-columns: repeat(2, 1fr);
   }
-  
   .analysis-grid {
     grid-template-columns: 1fr;
   }
