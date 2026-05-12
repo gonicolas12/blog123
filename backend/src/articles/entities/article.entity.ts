@@ -20,10 +20,10 @@ export class Article {
   @Column({ nullable: true })
   excerpt: string;
 
-  @Column({ nullable: true })
+  @Column({ type: 'text', nullable: true })
   videoUrl: string;
 
-  @Column({ nullable: true })
+  @Column({ type: 'text', nullable: true })
   audioUrl: string;
 
   @Column({ default: false })
