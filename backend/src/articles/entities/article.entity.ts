@@ -23,6 +23,9 @@ export class Article {
   @Column({ nullable: true })
   videoUrl: string;
 
+  @Column({ nullable: true })
+  audioUrl: string;
+
   @Column({ default: false })
   published: boolean;
 

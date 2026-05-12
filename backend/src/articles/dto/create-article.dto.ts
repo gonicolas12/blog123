@@ -25,6 +25,10 @@ export class CreateArticleDto {
   @IsOptional()
   videoUrl?: string;
 
+  @IsString()
+  @IsOptional()
+  audioUrl?: string;
+
   @IsBoolean()
   @IsOptional()
   published?: boolean;

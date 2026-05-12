@@ -87,6 +87,22 @@
           </div>
         </div>
 
+        <!-- Player audio si l'article a un MP3 -->
+        <div v-if="article.audioUrl" class="audio-section">
+          <div class="audio-player">
+            <div class="audio-player-header">
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none">
+                <path d="M11 5L6 9H2V15H6L11 19V5Z" fill="#FC602E" stroke="#FC602E" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+                <path d="M19.07 4.93C20.94 6.8 22 9.33 22 12C22 14.67 20.94 17.2 19.07 19.07M15.54 8.46C16.47 9.39 17 10.67 17 12C17 13.33 16.47 14.61 15.54 15.54" stroke="#FC602E" stroke-width="1.5" stroke-linecap="round"/>
+              </svg>
+              <span>Écouter l'interview</span>
+            </div>
+            <audio controls class="audio-native" :src="article.audioUrl">
+              Votre navigateur ne supporte pas la lecture audio.
+            </audio>
+          </div>
+        </div>
+
         <!-- Body -->
         <div class="article-body" v-html="article.content || sampleContent"></div>
 
@@ -190,7 +206,7 @@ const sampleContent = `
 const youtubeEmbedUrl = computed(() => {
   const url = article.value?.videoUrl
   if (!url) return null
-  const match = url.match(/(?:youtube\.com\/watch\?v=|youtu\.be\/)([a-zA-Z0-9_-]{11})/)
+  const match = url.match(/(?:youtube\.com\/(?:watch\?(?:.*&)?v=|embed\/|v\/)|youtu\.be\/)([a-zA-Z0-9_-]{11})/)
   if (!match) return null
   return `https://www.youtube.com/embed/${match[1]}?modestbranding=1&rel=0&showinfo=0`
 })
@@ -514,6 +530,35 @@ onMounted(async () => {
   cursor: pointer;
   display: flex;
   align-items: center;
+}
+
+/* Audio player */
+.audio-section {
+  margin-bottom: 40px;
+}
+
+.audio-player {
+  background: #191D24;
+  border: 1px solid #2B303B;
+  border-radius: 12px;
+  padding: 20px 24px;
+}
+
+.audio-player-header {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-family: 'Oswald', sans-serif;
+  font-size: 15px;
+  font-weight: 600;
+  color: #FAFAFA;
+  margin-bottom: 16px;
+}
+
+.audio-native {
+  width: 100%;
+  height: 40px;
+  accent-color: #FC602E;
 }
 
 /* Video player */
