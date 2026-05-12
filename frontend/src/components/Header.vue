@@ -60,17 +60,16 @@
             <input 
               type="text" 
               v-model="searchQuery"
-              placeholder="Rechercher des articles,sports..."
+              placeholder="Rechercher des articles, sports..."
               class="search-input"
-              @input="handleSearchInput"
-              @keyup.enter="handleSearch"
               @keyup.esc="closeSearch"
               ref="searchInput"
             />
+            <button v-if="searchQuery" class="clear-btn" @click="searchQuery = ''">✕</button>
           </div>
 
           <!-- Quick tags -->
-          <div class="search-section">
+          <div class="search-section" v-if="!searchQuery">
             <p class="search-section-label">Recherche rapide</p>
             <div class="search-tags">
               <button 
@@ -82,10 +81,15 @@
             </div>
           </div>
 
-          <!-- Results -->
-          <div v-if="searchResults.length > 0" class="search-section">
-            <p class="search-section-label">Recherche rapide</p>
-            <div class="search-results">
+          <!-- Résultats -->
+          <div v-if="searchQuery" class="search-section">
+            <p class="search-section-label">
+              {{ searchResults.length }} résultat{{ searchResults.length > 1 ? 's' : '' }} pour « {{ searchQuery }} »
+            </p>
+            <div v-if="searchResults.length === 0" class="no-results">
+              Aucun article trouvé.
+            </div>
+            <div v-else class="search-results">
               <RouterLink
                 v-for="result in searchResults"
                 :key="result.id"
@@ -93,14 +97,19 @@
                 class="search-result-item"
                 @click="closeSearch"
               >
-                <img :src="result.image" :alt="result.title" class="result-img" />
+                <img
+                  :src="result.imageUrl || 'https://images.unsplash.com/photo-1541701494587-cb58502866ab?w=200&q=80'"
+                  :alt="result.title"
+                  class="result-img"
+                />
                 <div class="result-content">
                   <div class="result-tags">
-                    <span class="result-tag" :style="{ background: result.categoryColor }">{{ result.category }}</span>
-                    <span class="result-tag result-tag-type">{{ result.type }}</span>
+                    <span v-if="result.category?.name" class="result-tag" :style="{ background: getCategoryColor(result.category.slug) }">
+                      {{ result.category.name }}
+                    </span>
                   </div>
                   <p class="result-title">{{ result.title }}</p>
-                  <p class="result-sub" v-if="result.sub">{{ result.sub }}</p>
+                  <p class="result-sub" v-if="result.excerpt">{{ result.excerpt }}</p>
                 </div>
               </RouterLink>
             </div>
@@ -112,66 +121,58 @@
 </template>
 
 <script setup>
-import { ref, nextTick, computed } from 'vue'
+import { ref, computed, nextTick } from 'vue'
 import { RouterLink, useRoute, useRouter } from 'vue-router'
+import { articleService } from '../services/articleService'
 
 const route = useRoute()
 const router = useRouter()
 const showSearch = ref(false)
 const searchQuery = ref('')
 const searchInput = ref(null)
+const allArticles = ref([])
 
 const quickTags = [
-  { label: 'Football', type: 'sport', slug: 'football' },
-  { label: 'Basketball', type: 'sport', slug: 'basketball' },
-  { label: 'Analyse', type: 'type', slug: 'analyse' },
-  { label: 'Interview', type: 'type', slug: 'interview' },
+  { label: 'Football', type: 'sport', slug: 'foot' },
+  { label: 'Basketball', type: 'sport', slug: 'basket' },
   { label: 'Tennis', type: 'sport', slug: 'tennis' },
+  { label: 'Formule 1', type: 'sport', slug: 'f1' },
+  { label: 'MMA', type: 'sport', slug: 'mma' },
 ]
 
-const allResults = [
-  {
-    id: '1',
-    image: 'https://images.unsplash.com/photo-1546519638-68e109498ffc?w=200&q=80',
-    category: 'Basketball',
-    categoryColor: '#F97316',
-    type: 'Analyse',
-    title: 'Steve Kerr expulsé, Stephen Curry commet une faute lors de la défaite des Warriors',
-    sub: 'Talent'
-  },
-  {
-    id: '2',
-    image: 'https://images.unsplash.com/photo-1541401154946-62f8d84bd284?w=200&q=80',
-    category: 'F1',
-    categoryColor: '#3B82F6',
-    type: 'Analyse',
-    title: 'Zhou Guanyu troque Ferrari contre Cadillac, débutant en F1, en tant que pilote de réserve',
-    sub: null
-  },
-  {
-    id: '3',
-    image: 'https://images.unsplash.com/photo-1549719386-74dfcbf7dbed?w=200&q=80',
-    category: 'MMA',
-    categoryColor: '#9333EA',
-    type: 'Analyse',
-    title: '10 combats de MMA que nous voulons voir en 2026',
-    sub: null
+const getCategoryColor = (slug) => {
+  const colors = {
+    'foot': '#10B981', 'football': '#10B981',
+    'basket': '#F97316', 'basketball': '#F97316',
+    'tennis': '#22C55E', 'rugby': '#DC2626',
+    'f1': '#3B82F6', 'formule-1': '#3B82F6',
+    'mma': '#9333EA'
   }
-]
+  return colors[slug] || '#FC602E'
+}
 
 const searchResults = computed(() => {
   if (!searchQuery.value.trim()) return []
   const q = searchQuery.value.toLowerCase()
-  return allResults.filter(r => 
-    r.title.toLowerCase().includes(q) || 
-    r.category.toLowerCase().includes(q) ||
-    r.type.toLowerCase().includes(q)
-  )
+  return allArticles.value.filter(a =>
+    a.title?.toLowerCase().includes(q) ||
+    a.excerpt?.toLowerCase().includes(q) ||
+    a.content?.toLowerCase().includes(q) ||
+    a.category?.name?.toLowerCase().includes(q)
+  ).slice(0, 6)
 })
 
-const openSearch = () => {
+const openSearch = async () => {
   showSearch.value = true
   nextTick(() => searchInput.value?.focus())
+  // Charge les articles si pas encore chargés
+  if (allArticles.value.length === 0) {
+    try {
+      allArticles.value = await articleService.getAll()
+    } catch (e) {
+      console.error('Erreur chargement articles recherche:', e)
+    }
+  }
 }
 
 const closeSearch = () => {
@@ -179,32 +180,8 @@ const closeSearch = () => {
   searchQuery.value = ''
 }
 
-const handleSearchInput = () => {
-  // reactive via computed
-}
-
-const handleSearch = () => {
-  const q = searchQuery.value.trim().toLowerCase()
-  if (!q) return
-  // Try to match a sport or type tag
-  const sportMatch = quickTags.find(t => t.type === 'sport' && t.label.toLowerCase() === q)
-  const typeMatch = quickTags.find(t => t.type === 'type' && t.label.toLowerCase() === q)
-  if (sportMatch) {
-    router.push(`/sport/${sportMatch.slug}`)
-  } else if (typeMatch) {
-    router.push({ path: '/sport/all', query: { type: typeMatch.slug } })
-  } else {
-    router.push({ path: '/sport/all', query: { q: searchQuery.value.trim() } })
-  }
-  closeSearch()
-}
-
 const navigateTag = (tag) => {
-  if (tag.type === 'sport') {
-    router.push(`/sport/${tag.slug}`)
-  } else {
-    router.push({ path: '/sport/all', query: { type: tag.slug } })
-  }
+  router.push(`/sport/${tag.slug}`)
   closeSearch()
 }
 </script>
@@ -275,9 +252,7 @@ const navigateTag = (tag) => {
   transition: color 0.2s;
 }
 
-.search-btn:hover {
-  color: #FAFAFA;
-}
+.search-btn:hover { color: #FAFAFA; }
 
 /* Search overlay */
 .search-overlay {
@@ -307,9 +282,7 @@ const navigateTag = (tag) => {
   margin-bottom: 32px;
 }
 
-.search-icon-inner {
-  flex-shrink: 0;
-}
+.search-icon-inner { flex-shrink: 0; }
 
 .search-input {
   flex: 1;
@@ -318,15 +291,24 @@ const navigateTag = (tag) => {
   outline: none;
   font-size: 16px;
   color: #FAFAFA;
+  font-family: 'Source Sans 3', sans-serif;
 }
 
-.search-input::placeholder {
+.search-input::placeholder { color: #6B7280; }
+
+.clear-btn {
+  background: transparent;
+  border: none;
   color: #6B7280;
+  cursor: pointer;
+  font-size: 14px;
+  padding: 0 4px;
+  transition: color 0.15s;
 }
 
-.search-section {
-  margin-bottom: 28px;
-}
+.clear-btn:hover { color: #FAFAFA; }
+
+.search-section { margin-bottom: 28px; }
 
 .search-section-label {
   font-family: 'Source Sans 3', sans-serif;
@@ -353,6 +335,7 @@ const navigateTag = (tag) => {
   color: #D1D5DB;
   cursor: pointer;
   transition: all 0.2s;
+  font-family: 'Source Sans 3', sans-serif;
 }
 
 .search-tag:hover {
@@ -361,10 +344,16 @@ const navigateTag = (tag) => {
   color: #fff;
 }
 
+.no-results {
+  color: #6B7280;
+  font-size: 14px;
+  padding: 20px 0;
+  text-align: center;
+}
+
 .search-results {
   display: flex;
   flex-direction: column;
-  gap: 0;
 }
 
 .search-result-item {
@@ -376,13 +365,8 @@ const navigateTag = (tag) => {
   transition: opacity 0.2s;
 }
 
-.search-result-item:hover {
-  opacity: 0.75;
-}
-
-.search-result-item:last-child {
-  border-bottom: none;
-}
+.search-result-item:hover { opacity: 0.75; }
+.search-result-item:last-child { border-bottom: none; }
 
 .result-img {
   width: 72px;
@@ -392,9 +376,7 @@ const navigateTag = (tag) => {
   flex-shrink: 0;
 }
 
-.result-content {
-  flex: 1;
-}
+.result-content { flex: 1; }
 
 .result-tags {
   display: flex;
@@ -408,11 +390,7 @@ const navigateTag = (tag) => {
   font-size: 11px;
   font-weight: 700;
   color: #fff;
-}
-
-.result-tag-type {
-  background: rgba(255,255,255,0.12);
-  color: #D1D5DB;
+  font-family: 'Oswald', sans-serif;
 }
 
 .result-title {
@@ -421,15 +399,18 @@ const navigateTag = (tag) => {
   font-weight: 600;
   color: #FAFAFA;
   line-height: 1.35;
+  margin-bottom: 4px;
 }
 
 .result-sub {
   font-size: 12px;
   color: #6B7280;
-  margin-top: 3px;
+  overflow: hidden;
+  display: -webkit-box;
+  -webkit-line-clamp: 1;
+  -webkit-box-orient: vertical;
 }
 
-/* Transition */
 .search-fade-enter-active,
 .search-fade-leave-active {
   transition: opacity 0.2s ease;
