@@ -62,7 +62,6 @@
         <div v-if="currentTab === 'articles'">
           <div class="content-header">
             <h2 class="content-title">Articles</h2>
-            <button class="btn-primary small" @click="openCreateForm">+ Nouvel article</button>
           </div>
           <div v-if="articlesLoading" class="loading">Chargement...</div>
           <div v-else-if="articles.length === 0" class="empty-state">Aucun article pour l'instant.</div>
