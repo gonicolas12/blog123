@@ -115,10 +115,10 @@
                 <input v-model="articleForm.imageUrl" type="url" class="field-input" placeholder="https://..." />
               </div>
               <div class="field full">
-                <label class="field-label">Vidéo YouTube <span class="field-hint">— colle l'URL complète (optionnel)</span></label>
-                <input v-model="articleForm.videoUrl" type="text" class="field-input" placeholder="https://www.youtube.com/watch?v=..." />
-                <span v-if="youtubePreviewId" class="field-preview">✓ Vidéo détectée : {{ youtubePreviewId }}</span>
-                <span v-else-if="articleForm.videoUrl" class="field-error-small">⚠ URL YouTube non reconnue</span>
+                <label class="field-label">Code d'intégration YouTube <span class="field-hint">— YouTube → Partager → Intégrer → cocher "Mode confidentialité" → copier le code</span></label>
+                <textarea v-model="articleForm.videoUrl" class="field-textarea" rows="3" placeholder='&lt;iframe ... src="https://www.youtube-nocookie.com/embed/..." ...&gt;&lt;/iframe&gt;' />
+                <span v-if="articleForm.videoUrl?.includes('iframe')" class="field-preview">✓ Code iframe détecté</span>
+                <span v-else-if="articleForm.videoUrl" class="field-error-small">⚠ Colle le code iframe complet généré par YouTube</span>
               </div>
               <div class="field full">
                 <label class="field-label">Audio MP3 <span class="field-hint">— URL publique d'un fichier .mp3 (optionnel)</span></label>
@@ -238,7 +238,7 @@
 </template>
 
 <script setup>
-import { ref, computed, onMounted } from 'vue'
+import { ref, onMounted } from 'vue'
 import { adminService } from '@/services/adminService'
 
 // Auth
@@ -272,14 +272,6 @@ const articleForm = ref({ title: '', content: '', excerpt: '', imageUrl: '', vid
 const formLoading = ref(false)
 const formError = ref('')
 const formSuccess = ref('')
-
-// Extrait l'ID YouTube (regex robuste qui ignore les paramètres supplémentaires)
-const youtubePreviewId = computed(() => {
-  const url = articleForm.value.videoUrl
-  if (!url) return null
-  const match = url.match(/(?:youtube\.com\/(?:watch\?(?:.*&)?v=|embed\/|v\/)|youtu\.be\/)([a-zA-Z0-9_-]{11})/)
-  return match ? match[1] : null
-})
 
 // Login
 const handleLogin = async () => {

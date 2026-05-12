@@ -70,17 +70,9 @@
           </div>
         </div>
 
-        <!-- Player YouTube -->
-        <div v-if="youtubeEmbedUrl" class="video-section">
-          <div class="video-wrapper">
-            <iframe
-              :src="youtubeEmbedUrl"
-              frameborder="0"
-              allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-              allowfullscreen
-              class="video-iframe"
-            ></iframe>
-          </div>
+        <!-- Player YouTube — code iframe collé depuis YouTube -->
+        <div v-if="article.videoUrl" class="video-section">
+          <div class="video-wrapper" v-html="article.videoUrl"></div>
         </div>
 
         <!-- Player Audio MP3 -->
@@ -192,16 +184,6 @@ const sampleContent = `
 <h3>Analyse Statistique</h3>
 <p><strong>Possession :</strong> 57% vs 48%<br/><strong>Buts attendus :</strong> 1.8 vs 2.1<br/><strong>Pressing :</strong> 127 vs 96 high recoveries</p>
 `
-
-// Extrait l'ID YouTube — regex robuste qui gère tous les formats d'URL
-const youtubeEmbedUrl = computed(() => {
-  const url = article.value?.videoUrl
-  if (!url) return null
-  const match = url.match(/(?:youtube\.com\/(?:watch\?(?:.*&)?v=|embed\/|v\/)|youtu\.be\/)([a-zA-Z0-9_-]{11})/)
-  if (!match) return null
-  // youtube-nocookie.com évite les restrictions CSP de youtube.com
-  return `https://www.youtube-nocookie.com/embed/${match[1]}?modestbranding=1&rel=0`
-})
 
 const authorName = computed(() => {
   if (!article.value?.author) return 'Rédaction Blog123'
@@ -440,12 +422,13 @@ onMounted(async () => {
   background: #000;
 }
 
-.video-iframe {
+.video-wrapper :deep(iframe) {
   position: absolute;
   top: 0;
   left: 0;
-  width: 100%;
-  height: 100%;
+  width: 100% !important;
+  height: 100% !important;
+  border-radius: 12px;
 }
 
 /* Audio player */
