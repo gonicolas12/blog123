@@ -1,23 +1,21 @@
-# Dockerfile pour le backend NestJS
-FROM node:20-alpine
+FROM node:20-alpine AS build
 
-# Définir le répertoire de travail
 WORKDIR /app
 
-# Copier les fichiers de dépendances
 COPY package*.json ./
+RUN npm ci
 
-# Installer les dépendances
-RUN npm install
-
-# Copier le reste du code source
 COPY . .
-
-# Construire le projet
 RUN npm run build
 
-# Exposer le port (par défaut 3000 pour NestJS)
-EXPOSE 3000
+FROM node:20-alpine AS production
 
-# Commande de démarrage
-CMD ["npm", "run", "start:prod"]
+WORKDIR /app
+
+COPY package*.json ./
+RUN npm ci --omit=dev
+
+COPY --from=build /app/dist ./dist
+
+EXPOSE 3000
+CMD ["node", "dist/main.js"]
