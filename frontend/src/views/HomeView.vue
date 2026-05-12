@@ -4,46 +4,43 @@
     <section class="hero-section">
       <div class="hero-background">
         <img 
-          src="https://images.unsplash.com/photo-1574629810360-7efbbe195018?w=1920&q=80" 
+          :src="heroArticle?.imageUrl || 'https://images.unsplash.com/photo-1574629810360-7efbbe195018?w=1920&q=80'" 
           alt="Hero background"
           class="hero-image"
         />
         <div class="hero-overlay"></div>
       </div>
       
-      <div class="hero-content">
+      <div class="hero-content" v-if="heroArticle">
         <div class="hero-badges">
           <span class="badge badge-featured">À LA UNE</span>
-          <span class="badge badge-sport">FOOTBALL</span>
+          <span v-if="heroArticle.category?.name" class="badge badge-sport">{{ heroArticle.category.name.toUpperCase() }}</span>
         </div>
         
-        <h1 class="hero-title">
-          Le PSG écrase l'OM dans un Classique historique : 4-0
-        </h1>
+        <h1 class="hero-title">{{ heroArticle.title }}</h1>
         
-        <p class="hero-description">
-          Une performance exceptionnelle des Parisiens qui envoient un message fort à leurs rivaux marseillais dans un Vélodrome bouillant.
-        </p>
+        <p class="hero-description" v-if="heroArticle.excerpt">{{ heroArticle.excerpt }}</p>
         
         <div class="hero-meta">
           <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
             <circle cx="8" cy="8" r="6.67" stroke="#8F96A3" stroke-width="1.33"/>
             <path d="M8 4V8L10.67 9.33" stroke="#8F96A3" stroke-width="1.33" stroke-linecap="round"/>
           </svg>
-          <span>Il y a 2 heures</span>
-          <span class="separator">•</span>
-          <span>Par Jean Dupont</span>
+          <span>{{ formatDate(heroArticle.createdAt) }}</span>
         </div>
         
         <div class="hero-actions">
-          <RouterLink to="/article/hero-1" class="btn btn-primary">LIRE L'ARTICLE</RouterLink>
-          <button class="btn btn-secondary">
-            <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
-              <path d="M4 2L13.33 8L4 14V2Z" stroke="#FAFAFA" stroke-width="1.33" stroke-linecap="round" stroke-linejoin="round"/>
-            </svg>
-            VOIR LES TEMPS FORTS
-          </button>
+          <RouterLink :to="`/article/${heroArticle.id}`" class="btn btn-primary">LIRE L'ARTICLE</RouterLink>
         </div>
+      </div>
+
+      <!-- Fallback si pas d'articles -->
+      <div class="hero-content" v-else>
+        <div class="hero-badges">
+          <span class="badge badge-featured">À LA UNE</span>
+        </div>
+        <h1 class="hero-title">Bienvenue sur Blog123</h1>
+        <p class="hero-description">Votre source d'actualités sportives.</p>
       </div>
     </section>
 
@@ -54,12 +51,12 @@
       <div v-if="loading" class="loading-state">Chargement des articles...</div>
       
       <div v-else class="articles-grid">
-        <!-- Featured Article (Large) — premier article de la BDD ou fallback statique -->
+        <!-- Featured Article (Large) -->
         <article class="featured-article">
-          <RouterLink :to="featuredArticle ? `/article/${featuredArticle.id}` : '/article/featured-1'" class="article-card">
+          <RouterLink :to="featuredArticle ? `/article/${featuredArticle.id}` : '/'" class="article-card">
             <img 
               :src="featuredArticle?.imageUrl || 'https://images.unsplash.com/photo-1579952363873-27f3bade9f55?w=900&q=80'" 
-              :alt="featuredArticle?.title || 'Finale Champions League'"
+              :alt="featuredArticle?.title || ''"
               class="article-image"
             />
             <div class="article-overlay">
@@ -67,8 +64,8 @@
                 <span class="tag tag-category tag-foot">{{ featuredArticle?.category?.name || 'SPORT' }}</span>
                 <span class="tag tag-type">À la une</span>
               </div>
-              <h3 class="article-title">{{ featuredArticle?.title || 'Finale de la Ligue des Champions : la bataille tactique qui a défini une génération' }}</h3>
-              <p class="article-excerpt">{{ featuredArticle?.excerpt || 'Une analyse approfondie de la façon dont deux philosophies de jeu contrastées se sont affrontées.' }}</p>
+              <h3 class="article-title">{{ featuredArticle?.title || '' }}</h3>
+              <p class="article-excerpt">{{ featuredArticle?.excerpt || '' }}</p>
             </div>
           </RouterLink>
         </article>
@@ -91,7 +88,6 @@
             </div>
           </RouterLink>
 
-          <!-- Fallback si pas assez d'articles -->
           <div v-if="sidebarArticles.length === 0" class="empty-sidebar">
             Aucun article récent.
           </div>
@@ -104,7 +100,6 @@
       <h2 class="section-title">ANALYSES & REPORTAGES</h2>
       
       <div class="analysis-content-wrapper">
-        <!-- Articles Grid -->
         <div class="analysis-main">
           <div v-if="analysisArticles.length === 0 && !loading" class="empty-analysis">
             Aucun article pour le moment.
@@ -137,9 +132,7 @@
           </div>
         </div>
 
-        <!-- Sidebar -->
         <div class="analysis-sidebar">
-          <!-- Tendances -->
           <div class="tendances-card">
             <div class="tendances-header">
               <svg width="20" height="20" viewBox="0 0 24 24" fill="none">
@@ -158,7 +151,6 @@
             </ul>
           </div>
 
-          <!-- Newsletter -->
           <div class="newsletter-card">
             <div class="newsletter-icon">
               <svg width="32" height="32" viewBox="0 0 24 24" fill="none">
@@ -207,16 +199,22 @@ import { articleService } from '../services/articleService'
 const allArticles = ref([])
 const loading = ref(false)
 
-// Article mis en avant = le plus récent
+// Article hero — aléatoire parmi tous les articles
+const heroArticle = computed(() => {
+  if (allArticles.value.length === 0) return null
+  const idx = Math.floor(Math.random() * Math.min(allArticles.value.length, 5))
+  return allArticles.value[idx]
+})
+
+// Featured = premier article
 const featuredArticle = computed(() => allArticles.value[0] || null)
 
 // Sidebar = articles 2 à 4
 const sidebarArticles = computed(() => allArticles.value.slice(1, 4))
 
-// Analyses = articles 4 à 8
+// Analyses = articles 5 à 9
 const analysisArticles = computed(() => allArticles.value.slice(4, 8))
 
-// Affiche proprement le nom de l'auteur
 const authorName = (article) => {
   if (!article.author) return ''
   const { firstName, lastName, email } = article.author
@@ -268,7 +266,6 @@ const sports = ref([
   color: #FAFAFA;
 }
 
-/* Hero Section */
 .hero-section {
   position: relative;
   height: 630px;
@@ -351,14 +348,9 @@ const sports = ref([
   font-size: 14px;
 }
 
-.separator {
-  color: #8F96A3;
-}
+.separator { color: #8F96A3; }
 
-.hero-actions {
-  display: flex;
-  gap: 12px;
-}
+.hero-actions { display: flex; gap: 12px; }
 
 .btn {
   display: flex;
@@ -375,39 +367,12 @@ const sports = ref([
   transition: all 0.3s;
 }
 
-.btn-primary {
-  padding: 14px 28px;
-  background: #FC602E;
-  color: #FAFAFA;
-}
+.btn-primary { padding: 14px 28px; background: #FC602E; color: #FAFAFA; }
+.btn-primary:hover { background: #E5541F; }
 
-.btn-primary:hover {
-  background: #E5541F;
-}
+.loading-state { text-align: center; padding: 60px; color: #6B7280; font-size: 14px; }
 
-.btn-secondary {
-  padding: 14px 24px;
-  background: rgba(39, 44, 53, 0.8);
-  border: 1px solid #3B4048;
-  color: #FAFAFA;
-}
-
-.btn-secondary:hover {
-  background: rgba(59, 64, 72, 0.9);
-}
-
-/* Loading */
-.loading-state {
-  text-align: center;
-  padding: 60px;
-  color: #6B7280;
-  font-size: 14px;
-}
-
-/* Latest News Section */
-.latest-news-section {
-  padding: 60px 80px;
-}
+.latest-news-section { padding: 60px 80px; }
 
 .section-title {
   font-family: 'Oswald', sans-serif;
@@ -423,9 +388,7 @@ const sports = ref([
   gap: 32px;
 }
 
-.featured-article {
-  width: 100%;
-}
+.featured-article { width: 100%; }
 
 .article-card {
   position: relative;
@@ -437,31 +400,17 @@ const sports = ref([
   color: inherit;
 }
 
-.article-image {
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
-  transition: transform 0.3s;
-}
-
-.article-card:hover .article-image {
-  transform: scale(1.03);
-}
+.article-image { width: 100%; height: 100%; object-fit: cover; transition: transform 0.3s; }
+.article-card:hover .article-image { transform: scale(1.03); }
 
 .article-overlay {
   position: absolute;
-  bottom: 0;
-  left: 0;
-  right: 0;
+  bottom: 0; left: 0; right: 0;
   padding: 32px;
   background: linear-gradient(180deg, transparent 0%, rgba(0, 0, 0, 0.85) 100%);
 }
 
-.article-tags {
-  display: flex;
-  gap: 8px;
-  margin-bottom: 16px;
-}
+.article-tags { display: flex; gap: 8px; margin-bottom: 16px; }
 
 .tag {
   padding: 4px 12px;
@@ -472,18 +421,9 @@ const sports = ref([
   letter-spacing: 0.5px;
 }
 
-.tag-category {
-  color: #FAFAFA;
-}
-
-.tag-foot {
-  background: #10B981;
-}
-
-.tag-type {
-  background: rgba(255, 255, 255, 0.2);
-  color: #FAFAFA;
-}
+.tag-category { color: #FAFAFA; }
+.tag-foot { background: #10B981; }
+.tag-type { background: rgba(255, 255, 255, 0.2); color: #FAFAFA; }
 
 .article-title {
   font-family: 'Oswald', sans-serif;
@@ -493,18 +433,9 @@ const sports = ref([
   margin-bottom: 12px;
 }
 
-.article-excerpt {
-  font-size: 14px;
-  line-height: 1.5;
-  color: #D1D5DB;
-}
+.article-excerpt { font-size: 14px; line-height: 1.5; color: #D1D5DB; }
 
-/* Sidebar Articles */
-.sidebar-articles {
-  display: flex;
-  flex-direction: column;
-  gap: 16px;
-}
+.sidebar-articles { display: flex; flex-direction: column; gap: 16px; }
 
 .sidebar-article {
   display: flex;
@@ -518,29 +449,12 @@ const sports = ref([
   color: inherit;
 }
 
-.sidebar-article:hover {
-  background: #1F242D;
-}
+.sidebar-article:hover { background: #1F242D; }
 
-.sidebar-article-image {
-  width: 100px;
-  height: 80px;
-  border-radius: 8px;
-  overflow: hidden;
-  flex-shrink: 0;
-}
+.sidebar-article-image { width: 100px; height: 80px; border-radius: 8px; overflow: hidden; flex-shrink: 0; }
+.sidebar-article-image img { width: 100%; height: 100%; object-fit: cover; }
 
-.sidebar-article-image img {
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
-}
-
-.sidebar-article-content {
-  display: flex;
-  flex-direction: column;
-  gap: 6px;
-}
+.sidebar-article-content { display: flex; flex-direction: column; gap: 6px; }
 
 .article-category {
   display: inline-block;
@@ -562,23 +476,10 @@ const sports = ref([
   color: #FAFAFA;
 }
 
-.article-time {
-  font-size: 12px;
-  color: #6B7280;
-}
+.article-time { font-size: 12px; color: #6B7280; }
+.empty-sidebar { color: #6B7280; font-size: 14px; padding: 20px; text-align: center; }
 
-.empty-sidebar {
-  color: #6B7280;
-  font-size: 14px;
-  padding: 20px;
-  text-align: center;
-}
-
-/* Analysis Section */
-.analysis-section {
-  padding: 60px 80px;
-  background: #0D0F13;
-}
+.analysis-section { padding: 60px 80px; background: #0D0F13; }
 
 .analysis-content-wrapper {
   display: grid;
@@ -587,335 +488,151 @@ const sports = ref([
   margin-bottom: 40px;
 }
 
-.analysis-grid {
-  display: grid;
-  grid-template-columns: repeat(2, 1fr);
-  gap: 24px;
-}
+.analysis-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 24px; }
 
 .empty-analysis {
-  color: #6B7280;
-  font-size: 14px;
-  padding: 40px;
-  text-align: center;
-  background: #191D24;
-  border-radius: 12px;
+  color: #6B7280; font-size: 14px; padding: 40px;
+  text-align: center; background: #191D24; border-radius: 12px;
 }
 
 .analysis-card {
-  background: #191D24;
-  border-radius: 12px;
-  overflow: hidden;
-  cursor: pointer;
-  transition: all 0.3s;
-  text-decoration: none;
-  color: inherit;
-  display: block;
+  background: #191D24; border-radius: 12px; overflow: hidden;
+  cursor: pointer; transition: all 0.3s; text-decoration: none; color: inherit; display: block;
 }
 
-.analysis-card:hover {
-  transform: translateY(-4px);
-  box-shadow: 0 12px 32px rgba(0, 0, 0, 0.4);
-}
+.analysis-card:hover { transform: translateY(-4px); box-shadow: 0 12px 32px rgba(0, 0, 0, 0.4); }
 
-.analysis-image {
-  position: relative;
-  height: 160px;
-  overflow: hidden;
-}
-
-.analysis-image img {
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
-}
+.analysis-image { position: relative; height: 160px; overflow: hidden; }
+.analysis-image img { width: 100%; height: 100%; object-fit: cover; }
 
 .analysis-badge {
-  position: absolute;
-  top: 12px;
-  left: 12px;
-  padding: 4px 12px;
-  border-radius: 4px;
-  font-size: 10px;
-  font-weight: 700;
-  letter-spacing: 0.5px;
-  color: #FAFAFA;
-  background: #FC602E;
+  position: absolute; top: 12px; left: 12px;
+  padding: 4px 12px; border-radius: 4px;
+  font-size: 10px; font-weight: 700; letter-spacing: 0.5px;
+  color: #FAFAFA; background: #FC602E;
 }
 
-.analysis-card-content {
-  padding: 20px;
-}
+.analysis-card-content { padding: 20px; }
 
 .analysis-card-content h3 {
-  font-family: 'Oswald', sans-serif;
-  font-size: 17px;
-  font-weight: 700;
-  line-height: 1.3;
-  margin-bottom: 10px;
-  color: #FAFAFA;
+  font-family: 'Oswald', sans-serif; font-size: 17px; font-weight: 700;
+  line-height: 1.3; margin-bottom: 10px; color: #FAFAFA;
 }
 
-.analysis-card-content p {
-  font-size: 13px;
-  line-height: 1.5;
-  color: #9CA3AF;
-  margin-bottom: 12px;
-}
+.analysis-card-content p { font-size: 13px; line-height: 1.5; color: #9CA3AF; margin-bottom: 12px; }
 
-.analysis-meta {
-  display: flex;
-  align-items: center;
-  gap: 6px;
-  font-size: 12px;
-  color: #6B7280;
-}
+.analysis-meta { display: flex; align-items: center; gap: 6px; font-size: 12px; color: #6B7280; }
 
-/* Sidebar - Tendances */
-.analysis-sidebar {
-  display: flex;
-  flex-direction: column;
-  gap: 24px;
-}
+.analysis-sidebar { display: flex; flex-direction: column; gap: 24px; }
 
-.tendances-card {
-  background: #191D24;
-  border-radius: 12px;
-  padding: 24px;
-}
+.tendances-card { background: #191D24; border-radius: 12px; padding: 24px; }
 
 .tendances-header {
-  display: flex;
-  align-items: center;
-  gap: 10px;
-  margin-bottom: 20px;
-  font-family: 'Oswald', sans-serif;
-  font-size: 16px;
-  font-weight: 700;
-  letter-spacing: 0.5px;
+  display: flex; align-items: center; gap: 10px; margin-bottom: 20px;
+  font-family: 'Oswald', sans-serif; font-size: 16px; font-weight: 700; letter-spacing: 0.5px;
 }
 
-.tendances-list {
-  list-style: none;
-  padding: 0;
-  margin: 0;
-}
+.tendances-list { list-style: none; padding: 0; margin: 0; }
 
 .tendances-list li {
-  display: flex;
-  align-items: flex-start;
-  gap: 16px;
-  padding: 12px 0;
-  border-bottom: 1px solid #2B303B;
+  display: flex; align-items: flex-start; gap: 16px;
+  padding: 12px 0; border-bottom: 1px solid #2B303B;
 }
 
-.tendances-list li:last-child {
-  border-bottom: none;
-}
+.tendances-list li:last-child { border-bottom: none; }
 
 .trend-number {
-  font-family: 'Oswald', sans-serif;
-  font-size: 20px;
-  font-weight: 700;
-  color: #4B5563;
-  min-width: 24px;
+  font-family: 'Oswald', sans-serif; font-size: 20px;
+  font-weight: 700; color: #4B5563; min-width: 24px;
 }
 
 .trend-content h5 {
-  font-family: 'Oswald', sans-serif;
-  font-size: 14px;
-  font-weight: 600;
-  color: #FAFAFA;
-  margin-bottom: 4px;
+  font-family: 'Oswald', sans-serif; font-size: 14px;
+  font-weight: 600; color: #FAFAFA; margin-bottom: 4px;
 }
 
-.trend-discussions {
-  font-size: 12px;
-  color: #6B7280;
-}
+.trend-discussions { font-size: 12px; color: #6B7280; }
 
-/* Newsletter */
 .newsletter-card {
   background: linear-gradient(135deg, #DC2626 0%, #B91C1C 100%);
-  border-radius: 12px;
-  padding: 28px;
-  text-align: center;
+  border-radius: 12px; padding: 28px; text-align: center;
 }
 
-.newsletter-icon {
-  margin-bottom: 16px;
-}
+.newsletter-icon { margin-bottom: 16px; }
 
 .newsletter-card h4 {
-  font-family: 'Oswald', sans-serif;
-  font-size: 20px;
-  font-weight: 700;
-  margin-bottom: 8px;
+  font-family: 'Oswald', sans-serif; font-size: 20px; font-weight: 700; margin-bottom: 8px;
 }
 
-.newsletter-card p {
-  font-size: 13px;
-  color: rgba(255, 255, 255, 0.85);
-  margin-bottom: 20px;
-}
+.newsletter-card p { font-size: 13px; color: rgba(255, 255, 255, 0.85); margin-bottom: 20px; }
 
 .newsletter-input {
-  width: 100%;
-  padding: 12px 16px;
-  background: rgba(255, 255, 255, 0.15);
-  border: 1px solid rgba(255, 255, 255, 0.25);
-  border-radius: 8px;
-  color: #FAFAFA;
-  font-size: 14px;
-  margin-bottom: 12px;
+  width: 100%; padding: 12px 16px;
+  background: rgba(255, 255, 255, 0.15); border: 1px solid rgba(255, 255, 255, 0.25);
+  border-radius: 8px; color: #FAFAFA; font-size: 14px; margin-bottom: 12px;
 }
 
-.newsletter-input::placeholder {
-  color: rgba(255, 255, 255, 0.6);
-}
+.newsletter-input::placeholder { color: rgba(255, 255, 255, 0.6); }
 
 .btn-subscribe {
-  width: 100%;
-  padding: 12px;
-  background: #FC602E;
-  border: none;
-  border-radius: 8px;
-  font-family: 'Oswald', sans-serif;
-  font-size: 14px;
-  font-weight: 700;
-  letter-spacing: 0.5px;
-  color: #FAFAFA;
-  cursor: pointer;
-  transition: all 0.3s;
+  width: 100%; padding: 12px; background: #FC602E; border: none;
+  border-radius: 8px; font-family: 'Oswald', sans-serif;
+  font-size: 14px; font-weight: 700; letter-spacing: 0.5px;
+  color: #FAFAFA; cursor: pointer; transition: all 0.3s;
 }
 
-.btn-subscribe:hover {
-  background: #E5541F;
-}
+.btn-subscribe:hover { background: #E5541F; }
 
-.view-more-container {
-  display: flex;
-  justify-content: center;
-  margin-top: 20px;
-}
+.view-more-container { display: flex; justify-content: center; margin-top: 20px; }
 
 .btn-view-more {
-  padding: 14px 32px;
-  background: #FC602E;
-  border: none;
-  border-radius: 8px;
-  font-family: 'Oswald', sans-serif;
-  font-size: 14px;
-  font-weight: 700;
-  letter-spacing: 0.5px;
-  color: #FAFAFA;
-  cursor: pointer;
-  transition: all 0.3s;
+  padding: 14px 32px; background: #FC602E; border: none; border-radius: 8px;
+  font-family: 'Oswald', sans-serif; font-size: 14px; font-weight: 700;
+  letter-spacing: 0.5px; color: #FAFAFA; cursor: pointer; transition: all 0.3s;
 }
 
-.btn-view-more:hover {
-  background: #E5541F;
-}
+.btn-view-more:hover { background: #E5541F; }
 
-/* Explore Section */
-.explore-section {
-  padding: 60px 80px 80px;
-}
+.explore-section { padding: 60px 80px 80px; }
 
-.sports-grid {
-  display: grid;
-  grid-template-columns: repeat(6, 1fr);
-  gap: 20px;
-}
+.sports-grid { display: grid; grid-template-columns: repeat(6, 1fr); gap: 20px; }
 
 .sport-card {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  padding: 32px 20px;
-  border-radius: 12px;
-  text-decoration: none;
-  transition: all 0.3s;
-  cursor: pointer;
+  display: flex; flex-direction: column; align-items: center;
+  justify-content: center; padding: 32px 20px; border-radius: 12px;
+  text-decoration: none; transition: all 0.3s; cursor: pointer;
 }
 
-.sport-card:hover {
-  transform: translateY(-4px);
-  box-shadow: 0 12px 32px rgba(0, 0, 0, 0.4);
-}
+.sport-card:hover { transform: translateY(-4px); box-shadow: 0 12px 32px rgba(0, 0, 0, 0.4); }
 
-.sport-icon {
-  font-size: 48px;
-  margin-bottom: 12px;
-}
+.sport-icon { font-size: 48px; margin-bottom: 12px; }
 
 .sport-name {
-  font-family: 'Oswald', sans-serif;
-  font-size: 14px;
-  font-weight: 600;
-  letter-spacing: 0.5px;
-  color: #FAFAFA;
+  font-family: 'Oswald', sans-serif; font-size: 14px;
+  font-weight: 600; letter-spacing: 0.5px; color: #FAFAFA;
 }
 
-/* Responsive */
 @media (max-width: 1280px) {
-  .articles-grid {
-    grid-template-columns: 1fr 350px;
-  }
-  .analysis-content-wrapper {
-    grid-template-columns: 1fr 300px;
-  }
-  .sports-grid {
-    grid-template-columns: repeat(3, 1fr);
-  }
-  .latest-news-section,
-  .analysis-section,
-  .explore-section {
-    padding-left: 40px;
-    padding-right: 40px;
-  }
+  .articles-grid { grid-template-columns: 1fr 350px; }
+  .analysis-content-wrapper { grid-template-columns: 1fr 300px; }
+  .sports-grid { grid-template-columns: repeat(3, 1fr); }
+  .latest-news-section, .analysis-section, .explore-section { padding-left: 40px; padding-right: 40px; }
 }
 
 @media (max-width: 1024px) {
-  .articles-grid {
-    grid-template-columns: 1fr;
-  }
-  .analysis-content-wrapper {
-    grid-template-columns: 1fr;
-  }
-  .analysis-grid {
-    grid-template-columns: repeat(2, 1fr);
-  }
+  .articles-grid { grid-template-columns: 1fr; }
+  .analysis-content-wrapper { grid-template-columns: 1fr; }
+  .analysis-grid { grid-template-columns: repeat(2, 1fr); }
 }
 
 @media (max-width: 768px) {
-  .hero-section {
-    height: 500px;
-  }
-  .hero-content {
-    padding: 120px 20px 0;
-    max-width: 100%;
-  }
-  .hero-title {
-    font-size: 32px;
-  }
-  .hero-actions {
-    flex-direction: column;
-  }
-  .btn {
-    width: 100%;
-  }
-  .latest-news-section,
-  .analysis-section,
-  .explore-section {
-    padding: 40px 20px;
-  }
-  .sports-grid {
-    grid-template-columns: repeat(2, 1fr);
-  }
-  .analysis-grid {
-    grid-template-columns: 1fr;
-  }
+  .hero-section { height: 500px; }
+  .hero-content { padding: 120px 20px 0; max-width: 100%; }
+  .hero-title { font-size: 32px; }
+  .hero-actions { flex-direction: column; }
+  .btn { width: 100%; }
+  .latest-news-section, .analysis-section, .explore-section { padding: 40px 20px; }
+  .sports-grid { grid-template-columns: repeat(2, 1fr); }
+  .analysis-grid { grid-template-columns: 1fr; }
 }
 </style>
