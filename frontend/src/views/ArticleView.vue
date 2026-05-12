@@ -23,8 +23,8 @@
       <div class="article-content-wrapper">
         <!-- Tags -->
         <div class="article-tags">
-          <span 
-            v-if="article.category" 
+          <span
+            v-if="article.category"
             class="tag tag-category"
             :style="{ background: getCategoryColor(article.category?.slug) }"
           >{{ article.category?.name || article.category }}</span>
@@ -63,18 +63,14 @@
               <button class="share-btn" title="Facebook">
                 <svg width="16" height="16" viewBox="0 0 24 24" fill="none"><path d="M18 2H15C13.67 2 12.4 2.53 11.46 3.46C10.53 4.4 10 5.67 10 7V10H7V14H10V22H14V14H17L18 10H14V7C14 6.73 14.11 6.48 14.29 6.29C14.48 6.11 14.73 6 15 6H18V2Z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
               </button>
-              <button class="share-btn" title="LinkedIn">
-                <svg width="16" height="16" viewBox="0 0 24 24" fill="none"><rect x="2" y="2" width="20" height="20" rx="5" stroke="currentColor" stroke-width="2"/><path d="M7 10V17M7 7V7.01M12 17V13C12 12.47 12.21 11.96 12.59 11.59C12.96 11.21 13.47 11 14 11C14.53 11 15.04 11.21 15.41 11.59C15.79 11.96 16 12.47 16 13V17M12 10V17" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
-              </button>
-              <button class="share-btn" title="Copier le lien">
+              <button class="share-btn" title="Copier le lien" @click="copyLink">
                 <svg width="16" height="16" viewBox="0 0 24 24" fill="none"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
               </button>
             </div>
           </div>
         </div>
 
-        <!-- Audio Player -->
-        <!-- Player YouTube si l'article a une vidéo -->
+        <!-- Player YouTube -->
         <div v-if="youtubeEmbedUrl" class="video-section">
           <div class="video-wrapper">
             <iframe
@@ -87,7 +83,7 @@
           </div>
         </div>
 
-        <!-- Player audio si l'article a un MP3 -->
+        <!-- Player Audio MP3 -->
         <div v-if="article.audioUrl" class="audio-section">
           <div class="audio-player">
             <div class="audio-player-header">
@@ -110,8 +106,8 @@
         <div class="author-section">
           <p class="author-label">ÉCRIT PAR</p>
           <div class="author-card">
-            <img 
-              :src="article.author?.avatar || 'https://media.licdn.com/dms/image/v2/D4D03AQEmvdWJ3xXyOQ/profile-displayphoto-shrink_800_800/B4DZbtdKr3HEAc-/0/1747740570484?e=1773273600&v=beta&t=zg9CuO77NKd5l13TG6Wnrt5uF4VmizARZ9mNveXdeJA'" 
+            <img
+              :src="article.author?.avatar || 'https://media.licdn.com/dms/image/v2/D4D03AQEmvdWJ3xXyOQ/profile-displayphoto-shrink_800_800/B4DZbtdKr3HEAc-/0/1747740570484?e=1773273600&v=beta&t=zg9CuO77NKd5l13TG6Wnrt5uF4VmizARZ9mNveXdeJA'"
               :alt="authorName"
               class="author-avatar"
             />
@@ -119,7 +115,7 @@
               <h4 class="author-name">{{ authorName }}</h4>
               <p class="author-role">Chef de projet</p>
               <p class="author-bio">
-                {{ authorName }} est un passionné de sport et de journalisme. En tant que chef de projet chez Blog123, il supervise la création de contenu captivant et de haute qualité, en veillant à ce que chaque article offre une perspective unique et approfondie sur le monde du sport.
+                {{ authorName }} est un passionné de sport et de journalisme. En tant que chef de projet chez Blog123, il supervise la création de contenu captivant et de haute qualité.
               </p>
             </div>
           </div>
@@ -133,8 +129,7 @@
             <div class="share-icons">
               <button class="share-btn"><svg width="16" height="16" viewBox="0 0 24 24" fill="none"><path d="M22 4L13.5 12.5M22 4H15L2 20H9L22 4Z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></button>
               <button class="share-btn"><svg width="16" height="16" viewBox="0 0 24 24" fill="none"><path d="M18 2H15C13.67 2 12.4 2.53 11.46 3.46C10.53 4.4 10 5.67 10 7V10H7V14H10V22H14V14H17L18 10H14V7C14 6.73 14.11 6.48 14.29 6.29C14.48 6.11 14.73 6 15 6H18V2Z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></button>
-              <button class="share-btn"><svg width="16" height="16" viewBox="0 0 24 24" fill="none"><rect x="2" y="2" width="20" height="20" rx="5" stroke="currentColor" stroke-width="2"/><path d="M7 10V17M7 7V7.01M12 17V13C12 12.47 12.21 11.96 12.59 11.59C12.96 11.21 13.47 11 14 11C14.53 11 15.04 11.21 15.41 11.59C15.79 11.96 16 12.47 16 13V17M12 10V17" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></button>
-              <button class="share-btn"><svg width="16" height="16" viewBox="0 0 24 24" fill="none"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></button>
+              <button class="share-btn" @click="copyLink"><svg width="16" height="16" viewBox="0 0 24 24" fill="none"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></button>
             </div>
           </div>
         </div>
@@ -143,11 +138,11 @@
       <!-- More Articles -->
       <section class="more-articles-section">
         <div class="more-articles-inner">
-          <h2 class="more-title">More Articles</h2>
+          <h2 class="more-title">Plus d'articles</h2>
           <div class="more-grid">
-            <RouterLink 
-              v-for="related in relatedArticles" 
-              :key="related.id" 
+            <RouterLink
+              v-for="related in relatedArticles"
+              :key="related.id"
               :to="`/article/${related.id}`"
               class="more-card"
             >
@@ -155,7 +150,6 @@
                 <img :src="related.image" :alt="related.title" />
                 <div class="more-card-tags">
                   <span class="tag tag-category" :style="{ background: related.catColor }">{{ related.category }}</span>
-                  <span class="tag tag-type">{{ related.type }}</span>
                 </div>
               </div>
               <div class="more-card-body">
@@ -185,7 +179,6 @@ const articleStore = useArticleStore()
 
 const article = ref(null)
 const loading = ref(true)
-const isPlaying = ref(false)
 
 const heroFallback = 'https://images.unsplash.com/photo-1579952363873-27f3bade9f55?w=1920&q=80'
 
@@ -194,25 +187,24 @@ const sampleContent = `
 <h3>Le Contexte</h3>
 <p>Dès le coup de sifflet, il était clair que les deux entraîneurs avaient bien préparé leur équipe. Le pressing haut de l'attaque se heurtait à la patience défensive, créant un match tactique qui se déroulerait sur 90 minutes.</p>
 <h3>Moments Tactiques Clés</h3>
-<p>Le combat au milieu de terrain fut décisif. Les deux équipes déployaient des zones compactes, forçant le jeu sur les côtés et créant un match de demi-espaces et de courses qui mettaient à l'épreuve la position de chaque joueur.</p>
+<p>Le combat au milieu de terrain fut décisif. Les deux équipes déployaient des zones compactes, forçant le jeu sur les côtés.</p>
 <blockquote>"Nous savions qu'ils essaieraient de nous étouffer au milieu. La clé était la patience et la confiance." — Entraîneur Principal</blockquote>
-<h3>Le Changement Décisif</h3>
-<p>Le remplacement à la 67e minute changea tout. L'entrée de nouveaux joueurs au milieu offensif créa de nouvelles lignes de passe et rompit enfin l'impasse qui avait frustré les deux équipes.</p>
 <h3>Analyse Statistique</h3>
-<p>Les chiffres racontent une histoire fascinante :</p>
-<p><strong>Possession :</strong> 57% vs 48%<br/><strong>Buts attendus :</strong> 1.8 vs 2.1<br/><strong>Pressing :</strong> 127 vs 96 high recoveries<br/><strong>Passes dans le dernier tiers :</strong> 89 vs 76</p>
+<p><strong>Possession :</strong> 57% vs 48%<br/><strong>Buts attendus :</strong> 1.8 vs 2.1<br/><strong>Pressing :</strong> 127 vs 96 high recoveries</p>
 `
 
+// Extrait l'ID YouTube — regex robuste qui gère tous les formats d'URL
 const youtubeEmbedUrl = computed(() => {
   const url = article.value?.videoUrl
   if (!url) return null
   const match = url.match(/(?:youtube\.com\/(?:watch\?(?:.*&)?v=|embed\/|v\/)|youtu\.be\/)([a-zA-Z0-9_-]{11})/)
   if (!match) return null
-  return `https://www.youtube.com/embed/${match[1]}?modestbranding=1&rel=0&showinfo=0`
+  // youtube-nocookie.com évite les restrictions CSP de youtube.com
+  return `https://www.youtube-nocookie.com/embed/${match[1]}?modestbranding=1&rel=0`
 })
 
 const authorName = computed(() => {
-  if (!article.value?.author) return 'Shemsedine MALAGOUEN'
+  if (!article.value?.author) return 'Rédaction Blog123'
   const a = article.value.author
   if (a.firstName && a.lastName) return `${a.firstName} ${a.lastName}`
   return a.firstName || a.email?.split('@')[0] || 'Auteur'
@@ -224,54 +216,46 @@ const relatedArticles = ref([
     image: 'https://images.unsplash.com/photo-1546519638-68e109498ffc?w=600&q=80',
     category: 'Basketball',
     catColor: '#F97316',
-    type: 'Feature',
-    title: 'Étoiles montantes : la prochaine Génération de talents NBA',
-    excerpt: 'Des tribunes universitaires aux ligues majeures, nous profitons les recrues...'
+    title: 'Étoiles montantes : la prochaine génération de talents NBA',
+    excerpt: 'Des tribunes universitaires aux ligues majeures...'
   },
   {
     id: 'r2',
     image: 'https://images.unsplash.com/photo-1622279457486-62bcc26ba4d3?w=600&q=80',
     category: 'Tennis',
     catColor: '#22C55E',
-    type: 'Preview',
-    title: 'Aperçu du Grand Chelem : qui peut Défier les meilleures...',
-    excerpt: 'À l\'approche du tournoi majeur, nous analysons les prétendants et som...'
+    title: 'Aperçu du Grand Chelem : qui peut défier les meilleurs ?',
+    excerpt: 'À l\'approche du tournoi majeur, nous analysons les prétendants...'
   },
   {
     id: 'r3',
     image: 'https://images.unsplash.com/photo-1541401154946-62f8d84bd284?w=600&q=80',
     category: 'Formule 1',
     catColor: '#3B82F6',
-    type: 'Analyse',
-    title: 'Bilan de la saison 2025 : Des innovations techniques...',
-    excerpt: 'Une plongée profonde dans la technique d\''
+    title: 'Bilan de la saison : des innovations techniques remarquables',
+    excerpt: 'Une plongée profonde dans les avancées techniques de la saison...'
   }
 ])
 
 const getCategoryColor = (slug) => {
   const colors = {
-    'foot': '#10B981',
-    'football': '#10B981',
-    'basket': '#F97316',
-    'basketball': '#F97316',
-    'tennis': '#22C55E',
-    'rugby': '#DC2626',
-    'f1': '#3B82F6',
+    'foot': '#10B981', 'football': '#10B981',
+    'basket': '#F97316', 'basketball': '#F97316',
+    'tennis': '#22C55E', 'rugby': '#DC2626',
+    'f1': '#3B82F6', 'formule-1': '#3B82F6',
     'mma': '#9333EA'
   }
   return colors[slug] || '#FC602E'
 }
 
-const togglePlay = () => {
-  isPlaying.value = !isPlaying.value
+const copyLink = () => {
+  navigator.clipboard.writeText(window.location.href)
 }
 
 const formatDate = (date) => {
-  if (!date) return 'January 15, 2024'
-  return new Date(date).toLocaleDateString('en-US', {
-    year: 'numeric',
-    month: 'long',
-    day: 'numeric'
+  if (!date) return ''
+  return new Date(date).toLocaleDateString('fr-FR', {
+    year: 'numeric', month: 'long', day: 'numeric'
   })
 }
 
@@ -279,18 +263,17 @@ onMounted(async () => {
   try {
     await articleStore.fetchArticle(route.params.id)
     article.value = articleStore.currentArticle
-    // Si l'API répond null/undefined, on met le mock
     if (!article.value) throw new Error('empty')
   } catch (e) {
     article.value = {
       id: route.params.id,
       title: 'Finale de la Ligue des Champions : La bataille tactique qui a défini une génération',
-      excerpt: 'Une analyse approfondie de la façon dont deux philosophies contrastées se sont affrontées dans ce que beaucoup appellent la plus grande finale de l\'histoire du tournoi.',
+      excerpt: 'Une analyse approfondie de la façon dont deux philosophies contrastées se sont affrontées.',
       imageUrl: heroFallback,
       content: sampleContent,
       createdAt: '2024-01-15',
       category: { name: 'Football', slug: 'foot' },
-      author: { firstName: 'Shemsedine', lastName: 'MALAGOUEN', email: 'blog123toulouse@gmail.com' }
+      author: { firstName: 'Rédaction', lastName: 'Blog123' }
     }
   } finally {
     loading.value = false
@@ -425,10 +408,7 @@ onMounted(async () => {
   color: #6B7280;
 }
 
-.share-icons {
-  display: flex;
-  gap: 8px;
-}
+.share-icons { display: flex; gap: 8px; }
 
 .share-btn {
   width: 34px;
@@ -444,92 +424,28 @@ onMounted(async () => {
   transition: all 0.2s;
 }
 
-.share-btn:hover {
-  background: #2B303B;
-  color: #FAFAFA;
-}
+.share-btn:hover { background: #2B303B; color: #FAFAFA; }
 
-/* Audio */
-.audio-section {
-  display: flex;
-  align-items: center;
-  gap: 16px;
-  margin-bottom: 16px;
-}
-
-.audio-pill-btn {
-  display: flex;
-  align-items: center;
-  gap: 10px;
-  padding: 12px 20px;
-  background: #FC602E;
-  border: none;
-  border-radius: 8px;
-  font-family: 'Oswald', sans-serif;
-  font-size: 14px;
-  font-weight: 600;
-  color: #FAFAFA;
-  cursor: pointer;
-  transition: background 0.2s;
-}
-
-.audio-pill-btn:hover { background: #E5541F; }
-
-.audio-author-info {
-  font-size: 13px;
-  color: #6B7280;
-}
-
-.audio-player-bar {
-  display: flex;
-  align-items: center;
-  gap: 14px;
-  padding: 16px 20px;
-  background: #191D24;
-  border-radius: 10px;
+/* Video player */
+.video-section {
   margin-bottom: 40px;
 }
 
-.play-btn {
-  width: 40px;
-  height: 40px;
-  background: rgba(252, 96, 46, 0.15);
-  border: none;
-  border-radius: 50%;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  cursor: pointer;
-  flex-shrink: 0;
-}
-
-.time-label {
-  font-size: 13px;
-  color: #9CA3AF;
-  min-width: 36px;
-}
-
-.progress-bar {
-  flex: 1;
-  height: 4px;
-  background: #2B303B;
-  border-radius: 999px;
+.video-wrapper {
+  position: relative;
+  padding-bottom: 56.25%;
+  height: 0;
+  border-radius: 12px;
   overflow: hidden;
+  background: #000;
 }
 
-.progress-fill {
+.video-iframe {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
   height: 100%;
-  background: #FC602E;
-  border-radius: 999px;
-}
-
-.volume-btn {
-  background: transparent;
-  border: none;
-  color: #9CA3AF;
-  cursor: pointer;
-  display: flex;
-  align-items: center;
 }
 
 /* Audio player */
@@ -561,29 +477,6 @@ onMounted(async () => {
   accent-color: #FC602E;
 }
 
-/* Video player */
-.video-section {
-  margin-bottom: 40px;
-}
-
-.video-wrapper {
-  position: relative;
-  padding-bottom: 56.25%; /* 16:9 */
-  height: 0;
-  border-radius: 12px;
-  overflow: hidden;
-  background: #000;
-}
-
-.video-iframe {
-  position: absolute;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  border-radius: 12px;
-}
-
 /* Article body */
 .article-body {
   font-family: 'Source Sans 3', sans-serif;
@@ -593,9 +486,7 @@ onMounted(async () => {
   margin-bottom: 48px;
 }
 
-.article-body :deep(p) {
-  margin-bottom: 1.4rem;
-}
+.article-body :deep(p) { margin-bottom: 1.4rem; }
 
 .article-body :deep(h3) {
   font-family: 'Oswald', sans-serif;
@@ -615,10 +506,7 @@ onMounted(async () => {
   color: #9CA3AF;
 }
 
-.article-body :deep(strong) {
-  color: #FAFAFA;
-  font-weight: 600;
-}
+.article-body :deep(strong) { color: #FAFAFA; font-weight: 600; }
 
 /* Author */
 .author-section {
@@ -660,17 +548,8 @@ onMounted(async () => {
   margin-bottom: 4px;
 }
 
-.author-role {
-  font-size: 13px;
-  color: #FC602E;
-  margin-bottom: 8px;
-}
-
-.author-bio {
-  font-size: 14px;
-  line-height: 1.6;
-  color: #9CA3AF;
-}
+.author-role { font-size: 13px; color: #FC602E; margin-bottom: 8px; }
+.author-bio { font-size: 14px; line-height: 1.6; color: #9CA3AF; }
 
 /* Bottom share */
 .bottom-share {
@@ -716,9 +595,7 @@ onMounted(async () => {
   transition: transform 0.2s;
 }
 
-.more-card:hover {
-  transform: translateY(-4px);
-}
+.more-card:hover { transform: translateY(-4px); }
 
 .more-card-img {
   position: relative;
@@ -726,11 +603,7 @@ onMounted(async () => {
   overflow: hidden;
 }
 
-.more-card-img img {
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
-}
+.more-card-img img { width: 100%; height: 100%; object-fit: cover; }
 
 .more-card-tags {
   position: absolute;
@@ -740,9 +613,7 @@ onMounted(async () => {
   gap: 6px;
 }
 
-.more-card-body {
-  padding: 16px;
-}
+.more-card-body { padding: 16px; }
 
 .more-card-body h3 {
   font-family: 'Oswald', sans-serif;
@@ -753,11 +624,7 @@ onMounted(async () => {
   margin-bottom: 8px;
 }
 
-.more-card-body p {
-  font-size: 13px;
-  color: #6B7280;
-  line-height: 1.5;
-}
+.more-card-body p { font-size: 13px; color: #6B7280; line-height: 1.5; }
 
 /* States */
 .loading-screen, .error-screen {
