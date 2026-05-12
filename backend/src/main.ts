@@ -7,7 +7,13 @@ async function bootstrap() {
 
   // Enable CORS
   app.enableCors({
-    origin: ['http://localhost:5173', 'http://192.168.100.20', 'https://blog123.fr'],
+    origin: [
+      'http://localhost:5173',
+      'http://localhost:80',
+      'http://192.168.100.20',
+      'https://blog123.fr',       // ton domaine prod
+      'https://www.blog123.fr',   // avec www si besoin
+    ],
     credentials: true,
   });
 

@@ -6,7 +6,14 @@ import { JwtAuthGuard } from '../auth/guards/jwt-auth.guard';
 
 @Controller('articles')
 export class ArticlesController {
-  constructor(private readonly articlesService: ArticlesService) {}
+  constructor(private readonly articlesService: ArticlesService) { }
+
+  // Route admin — retourne tous les articles (publiés + brouillons), JWT requis
+  @UseGuards(JwtAuthGuard)
+  @Get('admin/all')
+  findAllAdmin() {
+    return this.articlesService.findAllAdmin();
+  }
 
   @UseGuards(JwtAuthGuard)
   @Post()

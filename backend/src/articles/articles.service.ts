@@ -10,7 +10,7 @@ export class ArticlesService {
   constructor(
     @InjectRepository(Article)
     private articlesRepository: Repository<Article>,
-  ) {}
+  ) { }
 
   async create(createArticleDto: CreateArticleDto, authorId: string): Promise<Article> {
     const article = this.articlesRepository.create({
@@ -20,6 +20,14 @@ export class ArticlesService {
     return this.articlesRepository.save(article);
   }
 
+  // Tous les articles (publiés + brouillons) — pour l'admin
+  async findAllAdmin(): Promise<Article[]> {
+    return this.articlesRepository.find({
+      order: { createdAt: 'DESC' },
+    });
+  }
+
+  // Uniquement les articles publiés — pour le site public
   async findAll(): Promise<Article[]> {
     return this.articlesRepository.find({
       where: { published: true },
