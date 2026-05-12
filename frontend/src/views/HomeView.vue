@@ -166,7 +166,7 @@
       </div>
 
       <div class="view-more-container">
-        <button class="btn-view-more">VOIR PLUS D'ARTICLES</button>
+        <RouterLink to="/sport/all" class="btn-view-more">VOIR PLUS D'ARTICLES</RouterLink>
       </div>
     </section>
 
@@ -596,9 +596,13 @@ const sports = ref([
 .view-more-container { display: flex; justify-content: center; margin-top: 20px; }
 
 .btn-view-more {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
   padding: 14px 32px; background: #FC602E; border: none; border-radius: 8px;
   font-family: 'Oswald', sans-serif; font-size: 14px; font-weight: 700;
   letter-spacing: 0.5px; color: #FAFAFA; cursor: pointer; transition: all 0.3s;
+  text-decoration: none;
 }
 
 .btn-view-more:hover { background: #E5541F; }

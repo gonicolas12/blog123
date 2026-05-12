@@ -64,8 +64,6 @@
       <div class="footer-column">
         <h3 class="footer-title">INFORMATIONS</h3>
         <ul class="footer-links">
-          <li><RouterLink to="/about">À propos</RouterLink></li>
-          <li><RouterLink to="/contact">Contact</RouterLink></li>
           <li><a href="#">Mentions légales</a></li>
           <li><a href="#">Politique de confidentialité</a></li>
         </ul>
