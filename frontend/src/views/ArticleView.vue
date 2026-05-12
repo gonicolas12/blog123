@@ -173,17 +173,41 @@
 </template>
 
 <script setup>
-import { ref, computed, onMounted } from 'vue'
-import { useRoute, RouterLink } from 'vue-router'
+import { ref, computed, onMounted, watch } from 'vue'
+import { useRoute, RouterLink, useRouter } from 'vue-router'
 import { useArticleStore } from '../stores/articleStore'
 
 const route = useRoute()
+const router = useRouter()
 const articleStore = useArticleStore()
 
 const article = ref(null)
 const loading = ref(true)
 
 const heroFallback = 'https://images.unsplash.com/photo-1579952363873-27f3bade9f55?w=1920&q=80'
+
+const loadArticle = async (id) => {
+  loading.value = true
+  article.value = null
+  relatedArticles.value = []
+  try {
+    await articleStore.fetchArticle(id)
+    article.value = articleStore.currentArticle
+    if (!article.value) throw new Error('empty')
+    await loadRelatedArticles(id)
+  } catch (e) {
+    article.value = null
+  } finally {
+    loading.value = false
+  }
+}
+
+watch(() => route.params.id, (newId) => {
+  if (newId) {
+    window.scrollTo(0, 0)
+    loadArticle(newId)
+  }
+})
 
 const sampleContent = `
 <p>L'atmosphère dans le stade était électrique, une cacophonie de 80 000 voix créant un décor inoubliable pour ce qui allait devenir l'une des finales les plus fascinantes de l'histoire de la Ligue des champions.</p>
@@ -250,26 +274,8 @@ const formatDate = (date) => {
   })
 }
 
-onMounted(async () => {
-  try {
-    await articleStore.fetchArticle(route.params.id)
-    article.value = articleStore.currentArticle
-    if (!article.value) throw new Error('empty')
-    await loadRelatedArticles(route.params.id)
-  } catch (e) {
-    article.value = {
-      id: route.params.id,
-      title: 'Finale de la Ligue des Champions : La bataille tactique qui a défini une génération',
-      excerpt: 'Une analyse approfondie de la façon dont deux philosophies contrastées se sont affrontées.',
-      imageUrl: heroFallback,
-      content: sampleContent,
-      createdAt: '2024-01-15',
-      category: { name: 'Football', slug: 'foot' },
-      author: { firstName: 'Rédaction', lastName: 'Blog123' }
-    }
-  } finally {
-    loading.value = false
-  }
+onMounted(() => {
+  loadArticle(route.params.id)
 })
 </script>
 
