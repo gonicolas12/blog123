@@ -7,7 +7,7 @@
 
 import 'reflect-metadata';
 import { DataSource } from 'typeorm';
-import * as bcrypt from 'bcrypt';
+import * as bcrypt from 'bcryptjs';
 import * as dotenv from 'dotenv';
 import { join } from 'path';
 
@@ -413,15 +413,15 @@ async function seed() {
   const commentRepo = AppDataSource.getRepository(Comment);
 
   // ---- 1. Nettoyage (optionnel — commenter si vous ne voulez pas réinitialiser) ----
-console.log('🧹 Nettoyage des données existantes...');
-await AppDataSource.query('SET FOREIGN_KEY_CHECKS = 0;');
-await commentRepo.clear();
-await articleRepo.clear();
-await interviewRepo.clear();
-await categoryRepo.clear();
-await userRepo.clear();
-await AppDataSource.query('SET FOREIGN_KEY_CHECKS = 1;');
-console.log('   Tables vidées\n');
+  console.log('🧹 Nettoyage des données existantes...');
+  await AppDataSource.query('SET FOREIGN_KEY_CHECKS = 0;');
+  await commentRepo.clear();
+  await articleRepo.clear();
+  await interviewRepo.clear();
+  await categoryRepo.clear();
+  await userRepo.clear();
+  await AppDataSource.query('SET FOREIGN_KEY_CHECKS = 1;');
+  console.log('   Tables vidées\n');
 
   // ---- 2. Catégories ----
   console.log('📂 Création des catégories...');
