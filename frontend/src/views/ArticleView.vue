@@ -76,9 +76,9 @@
             <iframe
               :src="youtubeEmbedUrl"
               frameborder="0"
-              allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
-              referrerpolicy="strict-origin-when-cross-origin"
+              allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
               allowfullscreen
+              class="video-iframe"
             ></iframe>
           </div>
         </div>
@@ -139,7 +139,10 @@
       <section class="more-articles-section">
         <div class="more-articles-inner">
           <h2 class="more-title">Plus d'articles</h2>
-          <div class="more-grid">
+          <div v-if="relatedArticles.length === 0" class="empty-related">
+            Aucun autre article disponible.
+          </div>
+          <div v-else class="more-grid">
             <RouterLink
               v-for="related in relatedArticles"
               :key="related.id"
@@ -147,9 +150,9 @@
               class="more-card"
             >
               <div class="more-card-img">
-                <img :src="related.image" :alt="related.title" />
+                <img :src="related.imageUrl || 'https://images.unsplash.com/photo-1541701494587-cb58502866ab?w=600&q=80'" :alt="related.title" />
                 <div class="more-card-tags">
-                  <span class="tag tag-category" :style="{ background: related.catColor }">{{ related.category }}</span>
+                  <span v-if="related.category?.name" class="tag tag-category" :style="{ background: getCategoryColor(related.category?.slug) }">{{ related.category.name }}</span>
                 </div>
               </div>
               <div class="more-card-body">
@@ -193,12 +196,14 @@ const sampleContent = `
 <p><strong>Possession :</strong> 57% vs 48%<br/><strong>Buts attendus :</strong> 1.8 vs 2.1<br/><strong>Pressing :</strong> 127 vs 96 high recoveries</p>
 `
 
+// Extrait l'ID YouTube — regex robuste qui gère tous les formats d'URL
 const youtubeEmbedUrl = computed(() => {
   const url = article.value?.videoUrl
   if (!url) return null
   const match = url.match(/(?:youtube\.com\/(?:watch\?(?:.*&)?v=|embed\/|v\/)|youtu\.be\/)([a-zA-Z0-9_-]{11})/)
   if (!match) return null
-  return `https://www.youtube-nocookie.com/embed/${match[1]}`
+  // youtube-nocookie.com évite les restrictions CSP de youtube.com
+  return `https://www.youtube-nocookie.com/embed/${match[1]}?modestbranding=1&rel=0`
 })
 
 const authorName = computed(() => {
@@ -208,32 +213,20 @@ const authorName = computed(() => {
   return a.firstName || a.email?.split('@')[0] || 'Auteur'
 })
 
-const relatedArticles = ref([
-  {
-    id: 'r1',
-    image: 'https://images.unsplash.com/photo-1546519638-68e109498ffc?w=600&q=80',
-    category: 'Basketball',
-    catColor: '#F97316',
-    title: 'Étoiles montantes : la prochaine génération de talents NBA',
-    excerpt: 'Des tribunes universitaires aux ligues majeures...'
-  },
-  {
-    id: 'r2',
-    image: 'https://images.unsplash.com/photo-1622279457486-62bcc26ba4d3?w=600&q=80',
-    category: 'Tennis',
-    catColor: '#22C55E',
-    title: 'Aperçu du Grand Chelem : qui peut défier les meilleurs ?',
-    excerpt: 'À l\'approche du tournoi majeur, nous analysons les prétendants...'
-  },
-  {
-    id: 'r3',
-    image: 'https://images.unsplash.com/photo-1541401154946-62f8d84bd284?w=600&q=80',
-    category: 'Formule 1',
-    catColor: '#3B82F6',
-    title: 'Bilan de la saison : des innovations techniques remarquables',
-    excerpt: 'Une plongée profonde dans les avancées techniques de la saison...'
+const relatedArticles = ref([])
+
+const loadRelatedArticles = async (currentId) => {
+  try {
+    const { articleService } = await import('../services/articleService')
+    const all = await articleService.getAll()
+    const others = all.filter(a => a.id !== currentId)
+    // Mélange et prend 3
+    const shuffled = others.sort(() => Math.random() - 0.5)
+    relatedArticles.value = shuffled.slice(0, 3)
+  } catch (e) {
+    console.error('Erreur chargement articles liés:', e)
   }
-])
+}
 
 const getCategoryColor = (slug) => {
   const colors = {
@@ -262,6 +255,7 @@ onMounted(async () => {
     await articleStore.fetchArticle(route.params.id)
     article.value = articleStore.currentArticle
     if (!article.value) throw new Error('empty')
+    await loadRelatedArticles(route.params.id)
   } catch (e) {
     article.value = {
       id: route.params.id,
@@ -438,13 +432,12 @@ onMounted(async () => {
   background: #000;
 }
 
-.video-wrapper :deep(iframe) {
+.video-iframe {
   position: absolute;
   top: 0;
   left: 0;
-  width: 100% !important;
-  height: 100% !important;
-  border-radius: 12px;
+  width: 100%;
+  height: 100%;
 }
 
 /* Audio player */
@@ -621,6 +614,13 @@ onMounted(async () => {
   color: #FAFAFA;
   line-height: 1.3;
   margin-bottom: 8px;
+}
+
+.empty-related {
+  color: #6B7280;
+  font-size: 14px;
+  text-align: center;
+  padding: 40px;
 }
 
 .more-card-body p { font-size: 13px; color: #6B7280; line-height: 1.5; }
