@@ -5,6 +5,7 @@ on:
     branches:
       - main
 
+# Commentaire : Ce workflow s'exécute à chaque push sur la branche main. Il installe cloudflared, configure SSH pour se connecter via le tunnel Cloudflare, puis se connecte au serveur distant pour mettre à jour le code et redémarrer les conteneurs Docker. Assure-toi que les secrets nécessaires (SSH_PRIVATE_KEY) sont bien configurés dans les paramètres de ton dépôt GitHub.
 jobs:
   deploy:
     runs-on: ubuntu-latest
@@ -28,4 +29,4 @@ jobs:
 
       - name: Deploy
         run: |
-          ssh -i ~/.ssh/id_ed25519 root@ssh.blog123.fr "cd /home/web/blog123 && git pull origin main && docker compose up -d --build && docker image prune -f"
+          ssh -i ~/.ssh/id_ed25519 root@ssh.blog123.fr "cd /home/web/blog123 && git pull origin main && docker compose up -d --build && docker image prune -f" 
