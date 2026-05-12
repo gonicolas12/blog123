@@ -20,6 +20,9 @@ export class Article {
   @Column({ nullable: true })
   excerpt: string;
 
+  @Column({ nullable: true })
+  videoUrl: string;
+
   @Column({ default: false })
   published: boolean;
 

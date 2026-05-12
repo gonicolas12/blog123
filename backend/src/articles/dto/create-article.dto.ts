@@ -1,4 +1,4 @@
-import { IsString, IsNotEmpty, IsOptional, IsBoolean, IsUUID } from 'class-validator';
+import { IsString, IsNotEmpty, IsOptional, IsBoolean, IsUUID, IsUrl } from 'class-validator';
 
 export class CreateArticleDto {
   @IsString()
@@ -20,6 +20,10 @@ export class CreateArticleDto {
   @IsString()
   @IsOptional()
   excerpt?: string;
+
+  @IsString()
+  @IsOptional()
+  videoUrl?: string;
 
   @IsBoolean()
   @IsOptional()

@@ -74,38 +74,17 @@
         </div>
 
         <!-- Audio Player -->
-        <div class="audio-section">
-          <button class="audio-pill-btn">
-            <svg width="16" height="16" viewBox="0 0 24 24" fill="none">
-              <path d="M11 5L6 9H2V15H6L11 19V5Z" fill="#FAFAFA" stroke="#FAFAFA" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
-              <path d="M19.07 4.93C20.94 6.8 22 9.33 22 12C22 14.67 20.94 17.2 19.07 19.07M15.54 8.46C16.47 9.39 17 10.67 17 12C17 13.33 16.47 14.61 15.54 15.54" stroke="#FAFAFA" stroke-width="1.5" stroke-linecap="round"/>
-            </svg>
-            Écoutez cet article
-          </button>
-          <span class="audio-author-info" v-if="article.author">Narré par {{ article.author?.firstName || article.author?.email }} (06:21)</span>
-        </div>
-
-        <div class="audio-player-bar">
-          <button class="play-btn" @click="togglePlay">
-            <svg v-if="!isPlaying" width="18" height="18" viewBox="0 0 24 24" fill="#FC602E">
-              <path d="M5 3L19 12L5 21V3Z"/>
-            </svg>
-            <svg v-else width="18" height="18" viewBox="0 0 24 24" fill="#FC602E">
-              <rect x="6" y="4" width="4" height="16" fill="#FC602E"/>
-              <rect x="14" y="4" width="4" height="16" fill="#FC602E"/>
-            </svg>
-          </button>
-          <span class="time-label">00:00</span>
-          <div class="progress-bar">
-            <div class="progress-fill" style="width: 0%"></div>
+        <!-- Player YouTube si l'article a une vidéo -->
+        <div v-if="youtubeEmbedUrl" class="video-section">
+          <div class="video-wrapper">
+            <iframe
+              :src="youtubeEmbedUrl"
+              frameborder="0"
+              allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+              allowfullscreen
+              class="video-iframe"
+            ></iframe>
           </div>
-          <span class="time-label">06:21</span>
-          <button class="volume-btn">
-            <svg width="16" height="16" viewBox="0 0 24 24" fill="none">
-              <path d="M11 5L6 9H2V15H6L11 19V5Z" stroke="#9CA3AF" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-              <path d="M19.07 4.93C20.94 6.8 22 9.33 22 12C22 14.67 20.94 17.2 19.07 19.07" stroke="#9CA3AF" stroke-width="2" stroke-linecap="round"/>
-            </svg>
-          </button>
         </div>
 
         <!-- Body -->
@@ -207,6 +186,14 @@ const sampleContent = `
 <p>Les chiffres racontent une histoire fascinante :</p>
 <p><strong>Possession :</strong> 57% vs 48%<br/><strong>Buts attendus :</strong> 1.8 vs 2.1<br/><strong>Pressing :</strong> 127 vs 96 high recoveries<br/><strong>Passes dans le dernier tiers :</strong> 89 vs 76</p>
 `
+
+const youtubeEmbedUrl = computed(() => {
+  const url = article.value?.videoUrl
+  if (!url) return null
+  const match = url.match(/(?:youtube\.com\/watch\?v=|youtu\.be\/)([a-zA-Z0-9_-]{11})/)
+  if (!match) return null
+  return `https://www.youtube.com/embed/${match[1]}?modestbranding=1&rel=0&showinfo=0`
+})
 
 const authorName = computed(() => {
   if (!article.value?.author) return 'Shemsedine MALAGOUEN'
@@ -527,6 +514,29 @@ onMounted(async () => {
   cursor: pointer;
   display: flex;
   align-items: center;
+}
+
+/* Video player */
+.video-section {
+  margin-bottom: 40px;
+}
+
+.video-wrapper {
+  position: relative;
+  padding-bottom: 56.25%; /* 16:9 */
+  height: 0;
+  border-radius: 12px;
+  overflow: hidden;
+  background: #000;
+}
+
+.video-iframe {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  border-radius: 12px;
 }
 
 /* Article body */
