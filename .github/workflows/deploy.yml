@@ -5,7 +5,6 @@ on:
     branches:
       - main
 
-# Commentaire : Ce workflow s'exécute à chaque push sur la branche main. Il installe cloudflared, configure SSH pour se connecter via le tunnel Cloudflare, puis se connecte au serveur distant pour mettre à jour le code et redémarrer les conteneurs Docker. Assure-toi que les secrets nécessaires (SSH_PRIVATE_KEY) sont bien configurés dans les paramètres de ton dépôt GitHub.
 jobs:
   deploy:
     runs-on: ubuntu-latest
@@ -17,16 +16,22 @@ jobs:
           sudo dpkg -i cloudflared.deb
 
       - name: Configure SSH via Cloudflare Tunnel
+        env:
+          SSH_PRIVATE_KEY: ${{ secrets.SSH_PRIVATE_KEY }}
+          CF_ACCESS_CLIENT_ID: ${{ secrets.CF_ACCESS_CLIENT_ID }}
+          CF_ACCESS_CLIENT_SECRET: ${{ secrets.CF_ACCESS_CLIENT_SECRET }}
         run: |
           mkdir -p ~/.ssh
-          echo "${{ secrets.SSH_PRIVATE_KEY }}" > ~/.ssh/id_ed25519
+          echo "$SSH_PRIVATE_KEY" > ~/.ssh/id_ed25519
           chmod 600 ~/.ssh/id_ed25519
-          cat >> ~/.ssh/config << 'SSHEOF'
+          cat > ~/.ssh/config << EOF2
           Host ssh.blog123.fr
-            ProxyCommand cloudflared access ssh --hostname %h
+            ProxyCommand cloudflared access ssh --hostname %h --id $CF_ACCESS_CLIENT_ID --secret $CF_ACCESS_CLIENT_SECRET
             StrictHostKeyChecking no
-          SSHEOF
+            IdentityFile ~/.ssh/id_ed25519
+          EOF2
+          chmod 600 ~/.ssh/config
 
       - name: Deploy
         run: |
-          ssh -i ~/.ssh/id_ed25519 root@ssh.blog123.fr "cd /home/web/blog123 && git pull origin main && docker compose up -d --build && docker image prune -f" 
+          ssh root@ssh.blog123.fr "cd /home/web/blog123 && git pull origin main && docker compose up -d --build && docker image prune -f"
