@@ -144,8 +144,7 @@
               <li v-for="(trend, index) in trends" :key="index">
                 <span class="trend-number">{{ index + 1 }}</span>
                 <div class="trend-content">
-                  <h5>{{ trend.title }}</h5>
-                  <span class="trend-discussions">{{ trend.discussions }} discussions</span>
+                  <RouterLink :to="`/article/${trend.id}`" class="trend-link">{{ trend.title }}</RouterLink>
                 </div>
               </li>
             </ul>
@@ -242,13 +241,12 @@ onMounted(async () => {
   }
 })
 
-const trends = ref([
-  { title: 'Mbappé buteur face à l\'OM', discussions: '12.1K' },
-  { title: 'Real Madrid en forme', discussions: '8.2K' },
-  { title: 'Coupe de France tirage', discussions: '6.1K' },
-  { title: 'Transferts mercato', discussions: '5.8K' },
-  { title: 'NBA All-Star votes', discussions: '4.3K' }
-])
+const trends = computed(() =>
+  allArticles.value.slice(0, 5).map(a => ({
+    title: a.title,
+    id: a.id
+  }))
+)
 
 const sports = ref([
   { name: 'FOOTBALL', slug: 'foot', color: '#10B981', icon: '⚽' },
@@ -550,6 +548,18 @@ const sports = ref([
   font-family: 'Oswald', sans-serif; font-size: 14px;
   font-weight: 600; color: #FAFAFA; margin-bottom: 4px;
 }
+
+.trend-link {
+  font-family: 'Oswald', sans-serif;
+  font-size: 14px;
+  font-weight: 600;
+  color: #FAFAFA;
+  text-decoration: none;
+  line-height: 1.3;
+  display: block;
+}
+
+.trend-link:hover { color: #FC602E; }
 
 .trend-discussions { font-size: 12px; color: #6B7280; }
 
