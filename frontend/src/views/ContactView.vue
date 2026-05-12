@@ -86,8 +86,9 @@
             <label>Message</label>
             <textarea v-model="form.message" placeholder="Votre message..." rows="7" required></textarea>
           </div>
-          <button type="submit" class="btn-submit" :disabled="sent">
-            {{ sent ? 'MESSAGE ENVOYÉ ✓' : 'ENVOYER' }}
+          <p v-if="error" class="form-error">{{ error }}</p>
+          <button type="submit" class="btn-submit" :disabled="loading || sent">
+            {{ sent ? 'MESSAGE ENVOYÉ ✓' : loading ? 'ENVOI...' : 'ENVOYER' }}
           </button>
         </form>
       </div>
@@ -97,16 +98,26 @@
 
 <script setup>
 import { ref } from 'vue'
+import api from '@/services/api'
 
 const form = ref({ name: '', email: '', subject: '', message: '' })
 const sent = ref(false)
+const loading = ref(false)
+const error = ref('')
 
-const handleSubmit = () => {
-  sent.value = true
-  setTimeout(() => {
-    sent.value = false
+const handleSubmit = async () => {
+  loading.value = true
+  error.value = ''
+  try {
+    await api.post('/contact', form.value)
+    sent.value = true
     form.value = { name: '', email: '', subject: '', message: '' }
-  }, 3000)
+    setTimeout(() => { sent.value = false }, 4000)
+  } catch {
+    error.value = "Une erreur est survenue. Veuillez réessayer ou nous contacter par email."
+  } finally {
+    loading.value = false
+  }
 }
 </script>
 
@@ -329,6 +340,16 @@ const handleSubmit = () => {
 .btn-submit:disabled {
   background: #2B503A;
   cursor: default;
+}
+
+.form-error {
+  color: #F87171;
+  font-size: 14px;
+  margin-bottom: 12px;
+  padding: 10px 14px;
+  background: rgba(248, 113, 113, 0.1);
+  border-radius: 6px;
+  border: 1px solid rgba(248, 113, 113, 0.3);
 }
 
 @media (max-width: 900px) {
