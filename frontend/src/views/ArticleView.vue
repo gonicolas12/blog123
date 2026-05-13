@@ -92,7 +92,7 @@
         </div>
 
         <!-- Body -->
-        <div class="article-body" v-html="article.content || sampleContent"></div>
+        <div class="article-body" v-html="formattedContent"></div>
 
         <!-- Author card -->
         <div class="author-section">
@@ -211,6 +211,21 @@ const sampleContent = `
 <h3>Analyse Statistique</h3>
 <p><strong>Possession :</strong> 57% vs 48%<br/><strong>Buts attendus :</strong> 1.8 vs 2.1<br/><strong>Pressing :</strong> 127 vs 96 high recoveries</p>
 `
+
+const formattedContent = computed(() => {
+  const content = article.value?.content || sampleContent
+  // Si le contenu contient déjà des balises HTML, on l'affiche tel quel
+  if (content.includes('<p>') || content.includes('<h') || content.includes('<br')) {
+    return content
+  }
+  // Sinon on convertit les sauts de ligne en paragraphes
+  return content
+    .split('\n\n')
+    .map(para => para.trim())
+    .filter(para => para)
+    .map(para => `<p>${para.replace(/\n/g, '<br>')}</p>`)
+    .join('')
+})
 
 const authorName = computed(() => {
   if (!article.value?.author) return 'Rédaction Blog123'
