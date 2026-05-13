@@ -85,21 +85,23 @@
     <Transition name="search-fade">
       <div v-if="showSearch" class="search-overlay" @click.self="closeSearch">
         <div class="search-panel">
-          <div class="search-bar-wrapper">
-            <svg class="search-icon-inner" width="20" height="20" viewBox="0 0 24 24" fill="none">
-              <circle cx="11" cy="11" r="8" stroke="#9CA3AF" stroke-width="2"/>
-              <path d="M21 21L16.65 16.65" stroke="#9CA3AF" stroke-width="2" stroke-linecap="round"/>
-            </svg>
-            <input
-              type="text"
-              v-model="searchQuery"
-              placeholder="Rechercher des articles, sports..."
-              class="search-input"
-              @keyup.esc="closeSearch"
-              ref="searchInput"
-            />
-            <button v-if="searchQuery" class="clear-btn" @click="searchQuery = ''">✕</button>
-            <button class="close-search-btn" @click="closeSearch" aria-label="Fermer">✕</button>
+          <div class="search-top">
+            <div class="search-bar-wrapper">
+              <svg class="search-icon-inner" width="20" height="20" viewBox="0 0 24 24" fill="none">
+                <circle cx="11" cy="11" r="8" stroke="#9CA3AF" stroke-width="2"/>
+                <path d="M21 21L16.65 16.65" stroke="#9CA3AF" stroke-width="2" stroke-linecap="round"/>
+              </svg>
+              <input
+                type="text"
+                v-model="searchQuery"
+                placeholder="Rechercher des articles, sports..."
+                class="search-input"
+                @keyup.esc="closeSearch"
+                ref="searchInput"
+              />
+              <button v-if="searchQuery" class="clear-btn" @click="searchQuery = ''" aria-label="Effacer">✕</button>
+            </div>
+            <button class="close-search-btn" @click="closeSearch">Annuler</button>
           </div>
 
           <div class="search-section" v-if="!searchQuery">
@@ -416,6 +418,13 @@ watch(() => route.fullPath, () => {
   padding: 0 20px 40px;
 }
 
+.search-top {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 32px;
+}
+
 .search-bar-wrapper {
   display: flex;
   align-items: center;
@@ -424,7 +433,8 @@ watch(() => route.fullPath, () => {
   border: 1px solid #2B303B;
   border-radius: 12px;
   padding: 16px 20px;
-  margin-bottom: 32px;
+  flex: 1;
+  min-width: 0;
 }
 
 .search-icon-inner { flex-shrink: 0; }
@@ -442,8 +452,7 @@ watch(() => route.fullPath, () => {
 
 .search-input::placeholder { color: #6B7280; }
 
-.clear-btn,
-.close-search-btn {
+.clear-btn {
   background: transparent;
   border: none;
   color: #6B7280;
@@ -454,12 +463,23 @@ watch(() => route.fullPath, () => {
   flex-shrink: 0;
 }
 
-.clear-btn:hover,
-.close-search-btn:hover { color: #FAFAFA; }
+.clear-btn:hover { color: #FAFAFA; }
 
 .close-search-btn {
   display: none;
+  background: transparent;
+  border: none;
+  color: #FC602E;
+  cursor: pointer;
+  font-family: 'Source Sans 3', sans-serif;
+  font-size: 15px;
+  font-weight: 600;
+  padding: 4px 8px;
+  flex-shrink: 0;
+  transition: opacity 0.15s;
 }
+
+.close-search-btn:hover { opacity: 0.8; }
 
 .search-section { margin-bottom: 28px; }
 
@@ -613,10 +633,13 @@ watch(() => route.fullPath, () => {
   .search-panel {
     padding: 16px 16px 32px;
   }
+  .search-top {
+    margin-bottom: 24px;
+    gap: 8px;
+  }
   .search-bar-wrapper {
     padding: 12px 14px;
     gap: 10px;
-    margin-bottom: 24px;
   }
   .search-input {
     font-size: 15px;
