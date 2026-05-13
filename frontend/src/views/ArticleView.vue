@@ -99,15 +99,15 @@
           <p class="author-label">ÉCRIT PAR</p>
           <div class="author-card">
             <img
-              :src="article.author?.avatar || 'https://media.licdn.com/dms/image/v2/D4D03AQEmvdWJ3xXyOQ/profile-displayphoto-shrink_800_800/B4DZbtdKr3HEAc-/0/1747740570484?e=1773273600&v=beta&t=zg9CuO77NKd5l13TG6Wnrt5uF4VmizARZ9mNveXdeJA'"
-              :alt="authorName"
-              class="author-avatar"
+              src="/assets/images/logo.svg"
+              alt="Blog123"
+              class="author-avatar author-logo"
             />
             <div class="author-info">
-              <h4 class="author-name">{{ authorName }}</h4>
-              <p class="author-role">Chef de projet</p>
+              <h4 class="author-name">Blog123</h4>
+              <p class="author-role">Rédaction</p>
               <p class="author-bio">
-                {{ authorName }} est un passionné de sport et de journalisme. En tant que chef de projet chez Blog123, il supervise la création de contenu captivant et de haute qualité.
+                Blog123 est votre source d'actualités sportives en temps réel. Football, Basketball, Tennis, Rugby, Formule 1, MMA — notre équipe couvre toute l'actualité du sport avec passion.
               </p>
             </div>
           </div>
@@ -519,6 +519,14 @@ onMounted(() => {
   border-radius: 50%;
   object-fit: cover;
   flex-shrink: 0;
+}
+
+.author-logo {
+  border-radius: 0;
+  width: 80px;
+  height: 64px;
+  object-fit: contain;
+  background: transparent;
 }
 
 .author-name {
