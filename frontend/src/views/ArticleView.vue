@@ -668,6 +668,7 @@ onMounted(() => {
 }
 
 @media (max-width: 768px) {
+  .article-page { padding-top: 64px; }
   .article-hero { height: 260px; }
   .hero-inner { padding: 20px; }
   .article-content-wrapper { padding: 28px 16px 0; }

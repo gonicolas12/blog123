@@ -183,11 +183,15 @@ watch(() => route.params.sport, () => {
 
 .sport-main {
   display: grid;
-  grid-template-columns: 240px 1fr;
+  grid-template-columns: 240px minmax(0, 1fr);
   gap: 48px;
   padding: 40px 80px 80px;
   max-width: 1440px;
   margin: 0 auto;
+}
+
+.articles-area {
+  min-width: 0;
 }
 
 /* Sidebar */
@@ -272,7 +276,7 @@ watch(() => route.params.sport, () => {
 
 .articles-grid {
   display: grid;
-  grid-template-columns: repeat(3, 1fr);
+  grid-template-columns: repeat(3, minmax(0, 1fr));
   gap: 24px;
   margin-bottom: 40px;
 }
@@ -286,6 +290,7 @@ watch(() => route.params.sport, () => {
   transition: transform 0.2s, box-shadow 0.2s;
   display: flex;
   flex-direction: column;
+  min-width: 0;
 }
 
 .article-card:hover {
@@ -344,6 +349,8 @@ watch(() => route.params.sport, () => {
   -webkit-line-clamp: 2;
   -webkit-box-orient: vertical;
   overflow: hidden;
+  overflow-wrap: anywhere;
+  word-break: break-word;
 }
 
 .card-excerpt {
@@ -375,11 +382,15 @@ watch(() => route.params.sport, () => {
   font-size: 13px;
 }
 
+@media (max-width: 768px) {
+  .sport-page { padding-top: 64px; }
+}
+
 @media (max-width: 1024px) {
   .sport-main {
-    grid-template-columns: 1fr;
+    grid-template-columns: minmax(0, 1fr);
     gap: 24px;
-    padding: 32px 40px;
+    padding: 32px 32px;
   }
   .filter-block { margin-bottom: 0; }
   .filter-list {
@@ -399,15 +410,18 @@ watch(() => route.params.sport, () => {
     border-color: #FC602E;
   }
   .articles-grid {
-    grid-template-columns: repeat(2, 1fr);
+    grid-template-columns: repeat(2, minmax(0, 1fr));
     gap: 20px;
   }
 }
 
 @media (max-width: 640px) {
+  .sport-page {
+    padding-top: 64px;
+  }
   .sport-main {
-    padding: 24px 16px;
-    gap: 20px;
+    padding: 20px 16px 40px;
+    gap: 18px;
   }
   .filter-title {
     margin-bottom: 10px;
@@ -417,21 +431,30 @@ watch(() => route.params.sport, () => {
     flex-wrap: nowrap;
     overflow-x: auto;
     padding-bottom: 4px;
+    margin: 0 -16px;
+    padding-left: 16px;
+    padding-right: 16px;
     -webkit-overflow-scrolling: touch;
     scrollbar-width: none;
   }
   .filter-list::-webkit-scrollbar { display: none; }
   .filter-item {
     flex-shrink: 0;
-    padding: 8px 12px;
+    padding: 8px 14px;
     font-size: 13px;
   }
   .filter-name { white-space: nowrap; }
+  .articles-count { margin-bottom: 12px; font-size: 13px; }
   .articles-grid {
-    grid-template-columns: 1fr;
-    gap: 16px;
+    grid-template-columns: minmax(0, 1fr);
+    gap: 14px;
+    margin-bottom: 24px;
   }
-  .card-image { height: 200px; }
+  .article-card { width: 100%; max-width: 100%; }
+  .card-image { height: 180px; }
+  .card-body { padding: 14px; }
   .card-title { font-size: 15px; }
+  .card-excerpt { font-size: 12px; -webkit-line-clamp: 2; }
+  .card-meta { font-size: 11px; }
 }
 </style>

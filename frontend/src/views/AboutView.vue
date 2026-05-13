@@ -392,6 +392,7 @@ const team = ref([
 }
 
 @media (max-width: 768px) {
+  .about-page { padding-top: 64px; }
   .section-heading { font-size: 30px; margin-bottom: 24px; }
   .section-heading-accent { font-size: 26px; padding-bottom: 16px; }
 

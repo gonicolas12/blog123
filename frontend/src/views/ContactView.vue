@@ -367,6 +367,13 @@ const handleSubmit = async () => {
   .form-panel { padding-left: 0; }
 }
 
+@media (max-width: 768px) {
+  .contact-page {
+    padding-top: 64px;
+    min-height: calc(100vh - 64px);
+  }
+}
+
 @media (max-width: 600px) {
   .contact-header { padding: 48px 20px 32px; }
   .contact-title { font-size: 30px; margin-bottom: 14px; }

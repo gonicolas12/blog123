@@ -248,7 +248,7 @@ watch(() => route.fullPath, () => {
 
 .header-container {
   display: grid;
-  grid-template-columns: auto 1fr auto;
+  grid-template-columns: 1fr auto 1fr;
   align-items: center;
   max-width: 1440px;
   margin: 0 auto;
@@ -261,6 +261,7 @@ watch(() => route.fullPath, () => {
   display: flex;
   align-items: center;
   text-decoration: none;
+  justify-self: start;
 }
 
 .logo-img {
@@ -274,6 +275,7 @@ watch(() => route.fullPath, () => {
   align-items: center;
   justify-content: center;
   gap: 40px;
+  justify-self: center;
 }
 
 .nav-link {
@@ -295,6 +297,7 @@ watch(() => route.fullPath, () => {
   display: flex;
   align-items: center;
   gap: 4px;
+  justify-self: end;
 }
 
 .icon-btn {
@@ -583,7 +586,7 @@ watch(() => route.fullPath, () => {
 
 @media (max-width: 768px) {
   .header-container {
-    grid-template-columns: auto 1fr auto;
+    grid-template-columns: auto 1fr;
     padding: 0 16px;
     height: 64px;
     gap: 8px;
@@ -593,6 +596,10 @@ watch(() => route.fullPath, () => {
   }
   .nav {
     display: none;
+  }
+  .header-actions {
+    grid-column: 2;
+    justify-self: end;
   }
   .burger-btn {
     display: flex;
