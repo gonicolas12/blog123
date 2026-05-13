@@ -2,14 +2,14 @@
   <header class="header">
     <div class="header-container">
       <!-- Logo -->
-      <RouterLink to="/" class="logo">
+      <RouterLink to="/" class="logo" @click="closeMobileMenu">
         <img src="/assets/images/logo.svg" alt="Blog123" class="logo-img" />
       </RouterLink>
-      
-      <!-- Navigation -->
+
+      <!-- Navigation desktop -->
       <nav class="nav">
-        <RouterLink 
-          to="/" 
+        <RouterLink
+          to="/"
           class="nav-link"
           :class="{ active: $route.name === 'home' }"
         >
@@ -22,15 +22,15 @@
         >
           Sport
         </RouterLink>
-        <RouterLink 
-          to="/about" 
+        <RouterLink
+          to="/about"
           class="nav-link"
           :class="{ active: $route.name === 'about' }"
         >
           À propos
         </RouterLink>
-        <RouterLink 
-          to="/contact" 
+        <RouterLink
+          to="/contact"
           class="nav-link"
           :class="{ active: $route.name === 'contact' }"
         >
@@ -38,27 +38,60 @@
         </RouterLink>
       </nav>
 
-      <!-- Search Icon -->
-      <button class="search-btn" @click="openSearch">
-        <svg width="20" height="20" viewBox="0 0 24 24" fill="none">
-          <circle cx="11" cy="11" r="8" stroke="currentColor" stroke-width="2"/>
-          <path d="M21 21L16.65 16.65" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
-        </svg>
-      </button>
+      <!-- Actions (search + burger) -->
+      <div class="header-actions">
+        <button class="icon-btn" @click="openSearch" aria-label="Rechercher">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none">
+            <circle cx="11" cy="11" r="8" stroke="currentColor" stroke-width="2"/>
+            <path d="M21 21L16.65 16.65" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+          </svg>
+        </button>
+
+        <button
+          class="burger-btn"
+          :class="{ open: showMobileMenu }"
+          @click="toggleMobileMenu"
+          aria-label="Menu"
+          :aria-expanded="showMobileMenu"
+        >
+          <span></span>
+          <span></span>
+          <span></span>
+        </button>
+      </div>
     </div>
+
+    <!-- Mobile menu drawer -->
+    <Transition name="mobile-fade">
+      <div v-if="showMobileMenu" class="mobile-menu" @click.self="closeMobileMenu">
+        <nav class="mobile-nav">
+          <RouterLink to="/" class="mobile-link" :class="{ active: $route.name === 'home' }" @click="closeMobileMenu">
+            Articles
+          </RouterLink>
+          <RouterLink to="/sport/all" class="mobile-link" :class="{ active: $route.path.startsWith('/sport') }" @click="closeMobileMenu">
+            Sport
+          </RouterLink>
+          <RouterLink to="/about" class="mobile-link" :class="{ active: $route.name === 'about' }" @click="closeMobileMenu">
+            À propos
+          </RouterLink>
+          <RouterLink to="/contact" class="mobile-link" :class="{ active: $route.name === 'contact' }" @click="closeMobileMenu">
+            Contact
+          </RouterLink>
+        </nav>
+      </div>
+    </Transition>
 
     <!-- Search Overlay -->
     <Transition name="search-fade">
       <div v-if="showSearch" class="search-overlay" @click.self="closeSearch">
         <div class="search-panel">
-          <!-- Search bar -->
           <div class="search-bar-wrapper">
             <svg class="search-icon-inner" width="20" height="20" viewBox="0 0 24 24" fill="none">
               <circle cx="11" cy="11" r="8" stroke="#9CA3AF" stroke-width="2"/>
               <path d="M21 21L16.65 16.65" stroke="#9CA3AF" stroke-width="2" stroke-linecap="round"/>
             </svg>
-            <input 
-              type="text" 
+            <input
+              type="text"
               v-model="searchQuery"
               placeholder="Rechercher des articles, sports..."
               class="search-input"
@@ -66,22 +99,21 @@
               ref="searchInput"
             />
             <button v-if="searchQuery" class="clear-btn" @click="searchQuery = ''">✕</button>
+            <button class="close-search-btn" @click="closeSearch" aria-label="Fermer">✕</button>
           </div>
 
-          <!-- Quick tags -->
           <div class="search-section" v-if="!searchQuery">
             <p class="search-section-label">Recherche rapide</p>
             <div class="search-tags">
-              <button 
-                v-for="tag in quickTags" 
-                :key="tag.slug" 
+              <button
+                v-for="tag in quickTags"
+                :key="tag.slug"
                 class="search-tag"
                 @click="navigateTag(tag)"
               >{{ tag.label }}</button>
             </div>
           </div>
 
-          <!-- Résultats -->
           <div v-if="searchQuery" class="search-section">
             <p class="search-section-label">
               {{ searchResults.length }} résultat{{ searchResults.length > 1 ? 's' : '' }} pour « {{ searchQuery }} »
@@ -121,13 +153,14 @@
 </template>
 
 <script setup>
-import { ref, computed, nextTick } from 'vue'
+import { ref, computed, nextTick, watch } from 'vue'
 import { RouterLink, useRoute, useRouter } from 'vue-router'
 import { articleService } from '../services/articleService'
 
 const route = useRoute()
 const router = useRouter()
 const showSearch = ref(false)
+const showMobileMenu = ref(false)
 const searchQuery = ref('')
 const searchInput = ref(null)
 const allArticles = ref([])
@@ -164,8 +197,9 @@ const searchResults = computed(() => {
 
 const openSearch = async () => {
   showSearch.value = true
+  showMobileMenu.value = false
+  document.body.style.overflow = 'hidden'
   nextTick(() => searchInput.value?.focus())
-  // Charge les articles si pas encore chargés
   if (allArticles.value.length === 0) {
     try {
       allArticles.value = await articleService.getAll()
@@ -178,12 +212,27 @@ const openSearch = async () => {
 const closeSearch = () => {
   showSearch.value = false
   searchQuery.value = ''
+  document.body.style.overflow = ''
+}
+
+const toggleMobileMenu = () => {
+  showMobileMenu.value = !showMobileMenu.value
+  document.body.style.overflow = showMobileMenu.value ? 'hidden' : ''
+}
+
+const closeMobileMenu = () => {
+  showMobileMenu.value = false
+  document.body.style.overflow = ''
 }
 
 const navigateTag = (tag) => {
   router.push(`/sport/${tag.slug}`)
   closeSearch()
 }
+
+watch(() => route.fullPath, () => {
+  closeMobileMenu()
+})
 </script>
 
 <style scoped>
@@ -199,12 +248,13 @@ const navigateTag = (tag) => {
 
 .header-container {
   display: grid;
-  grid-template-columns: 1fr auto 1fr;
+  grid-template-columns: auto 1fr auto;
   align-items: center;
   max-width: 1440px;
   margin: 0 auto;
   padding: 0 40px;
   height: 72px;
+  gap: 24px;
 }
 
 .logo {
@@ -214,13 +264,15 @@ const navigateTag = (tag) => {
 }
 
 .logo-img {
-  height: 72px;
+  height: 56px;
   width: auto;
+  display: block;
 }
 
 .nav {
   display: flex;
   align-items: center;
+  justify-content: center;
   gap: 40px;
 }
 
@@ -231,6 +283,7 @@ const navigateTag = (tag) => {
   color: #9CA3AF;
   text-decoration: none;
   transition: color 0.2s;
+  white-space: nowrap;
 }
 
 .nav-link:hover,
@@ -238,7 +291,13 @@ const navigateTag = (tag) => {
   color: #FC602E;
 }
 
-.search-btn {
+.header-actions {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.icon-btn {
   display: flex;
   align-items: center;
   justify-content: center;
@@ -247,12 +306,94 @@ const navigateTag = (tag) => {
   background: transparent;
   border: none;
   color: #9CA3AF;
-  justify-self: end;
   cursor: pointer;
   transition: color 0.2s;
+  border-radius: 8px;
 }
 
-.search-btn:hover { color: #FAFAFA; }
+.icon-btn:hover {
+  color: #FAFAFA;
+  background: rgba(255,255,255,0.04);
+}
+
+/* Burger button — caché sur desktop */
+.burger-btn {
+  display: none;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 5px;
+  width: 40px;
+  height: 40px;
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  padding: 0;
+  border-radius: 8px;
+}
+
+.burger-btn span {
+  display: block;
+  width: 22px;
+  height: 2px;
+  background: #FAFAFA;
+  border-radius: 2px;
+  transition: transform 0.25s, opacity 0.2s;
+}
+
+.burger-btn.open span:nth-child(1) {
+  transform: translateY(7px) rotate(45deg);
+}
+.burger-btn.open span:nth-child(2) {
+  opacity: 0;
+}
+.burger-btn.open span:nth-child(3) {
+  transform: translateY(-7px) rotate(-45deg);
+}
+
+/* Mobile menu */
+.mobile-menu {
+  position: fixed;
+  top: 64px;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(16, 19, 24, 0.98);
+  z-index: 90;
+  overflow-y: auto;
+}
+
+.mobile-nav {
+  display: flex;
+  flex-direction: column;
+  padding: 8px 0;
+}
+
+.mobile-link {
+  padding: 18px 24px;
+  font-family: 'Source Sans 3', sans-serif;
+  font-size: 18px;
+  font-weight: 500;
+  color: #FAFAFA;
+  text-decoration: none;
+  border-bottom: 1px solid #1F242D;
+  transition: background 0.15s, color 0.15s;
+}
+
+.mobile-link:hover,
+.mobile-link.active {
+  background: rgba(252, 96, 46, 0.08);
+  color: #FC602E;
+}
+
+.mobile-fade-enter-active,
+.mobile-fade-leave-active {
+  transition: opacity 0.2s ease;
+}
+.mobile-fade-enter-from,
+.mobile-fade-leave-to {
+  opacity: 0;
+}
 
 /* Search overlay */
 .search-overlay {
@@ -263,12 +404,13 @@ const navigateTag = (tag) => {
   display: flex;
   justify-content: center;
   padding-top: 80px;
+  overflow-y: auto;
 }
 
 .search-panel {
   width: 100%;
   max-width: 720px;
-  padding: 0 20px;
+  padding: 0 20px 40px;
 }
 
 .search-bar-wrapper {
@@ -292,21 +434,29 @@ const navigateTag = (tag) => {
   font-size: 16px;
   color: #FAFAFA;
   font-family: 'Source Sans 3', sans-serif;
+  min-width: 0;
 }
 
 .search-input::placeholder { color: #6B7280; }
 
-.clear-btn {
+.clear-btn,
+.close-search-btn {
   background: transparent;
   border: none;
   color: #6B7280;
   cursor: pointer;
   font-size: 14px;
-  padding: 0 4px;
+  padding: 4px 8px;
   transition: color 0.15s;
+  flex-shrink: 0;
 }
 
-.clear-btn:hover { color: #FAFAFA; }
+.clear-btn:hover,
+.close-search-btn:hover { color: #FAFAFA; }
+
+.close-search-btn {
+  display: none;
+}
 
 .search-section { margin-bottom: 28px; }
 
@@ -376,7 +526,7 @@ const navigateTag = (tag) => {
   flex-shrink: 0;
 }
 
-.result-content { flex: 1; }
+.result-content { flex: 1; min-width: 0; }
 
 .result-tags {
   display: flex;
@@ -421,8 +571,69 @@ const navigateTag = (tag) => {
   opacity: 0;
 }
 
+/* Responsive */
+@media (max-width: 1024px) {
+  .header-container {
+    padding: 0 24px;
+    gap: 16px;
+  }
+  .nav { gap: 28px; }
+  .nav-link { font-size: 14px; }
+}
+
 @media (max-width: 768px) {
-  .header-container { padding: 0 20px; }
-  .nav { display: none; }
+  .header-container {
+    grid-template-columns: auto 1fr auto;
+    padding: 0 16px;
+    height: 64px;
+    gap: 8px;
+  }
+  .logo-img {
+    height: 44px;
+  }
+  .nav {
+    display: none;
+  }
+  .burger-btn {
+    display: flex;
+  }
+  .mobile-menu {
+    top: 64px;
+  }
+  .search-overlay {
+    padding-top: 16px;
+  }
+  .search-panel {
+    padding: 16px 16px 32px;
+  }
+  .search-bar-wrapper {
+    padding: 12px 14px;
+    gap: 10px;
+    margin-bottom: 24px;
+  }
+  .search-input {
+    font-size: 15px;
+  }
+  .close-search-btn {
+    display: block;
+  }
+  .search-tag {
+    padding: 8px 14px;
+    font-size: 13px;
+  }
+}
+
+@media (max-width: 420px) {
+  .header-container {
+    padding: 0 12px;
+  }
+  .logo-img {
+    height: 38px;
+  }
+  .icon-btn,
+  .burger-btn {
+    width: 36px;
+    height: 36px;
+  }
 }
 </style>

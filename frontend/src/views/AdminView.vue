@@ -571,6 +571,7 @@ onMounted(() => {
   flex: 1;
   padding: 40px;
   max-width: calc(100vw - 240px);
+  min-width: 0;
 }
 
 .content-header {
@@ -893,4 +894,94 @@ onMounted(() => {
 .modal-body { color: #9CA3AF; font-size: 14px; margin-bottom: 24px; }
 
 .modal-actions { display: flex; justify-content: flex-end; gap: 12px; }
+
+/* Responsive admin */
+@media (max-width: 1024px) {
+  .sidebar {
+    position: static;
+    width: 100%;
+    height: auto;
+    flex-direction: row;
+    align-items: center;
+    padding: 12px 16px;
+    border-right: none;
+    border-bottom: 1px solid #2B303B;
+    gap: 12px;
+    flex-wrap: wrap;
+  }
+  .sidebar-logo {
+    padding: 0;
+    border-bottom: none;
+    margin-bottom: 0;
+    margin-right: auto;
+  }
+  .sidebar-logo .logo-img { height: 32px; }
+  .sidebar-nav {
+    flex-direction: row;
+    flex-wrap: wrap;
+    padding: 0;
+    gap: 6px;
+    flex: 0 0 auto;
+  }
+  .nav-item { padding: 8px 12px; font-size: 13px; }
+  .sidebar-footer {
+    flex-direction: row;
+    align-items: center;
+    gap: 12px;
+    padding: 0;
+    border-top: none;
+    flex-wrap: wrap;
+  }
+  .user-email { font-size: 11px; }
+  .dashboard { flex-direction: column; }
+  .main-content {
+    margin-left: 0;
+    max-width: 100%;
+    padding: 24px;
+  }
+
+  .form-grid { grid-template-columns: 1fr; gap: 16px; }
+  .article-form { padding: 24px; }
+  .content-header { gap: 12px; flex-wrap: wrap; }
+
+  /* Table devient cartes en stack */
+  .articles-table { background: transparent; border: none; }
+  .table-header { display: none; }
+  .table-row {
+    grid-template-columns: 1fr !important;
+    background: #191D24;
+    border: 1px solid #2B303B;
+    border-radius: 12px;
+    margin-bottom: 12px;
+    padding: 16px;
+    gap: 8px;
+  }
+  .table-row:last-child { border-bottom: 1px solid #2B303B; }
+  .article-title-cell {
+    white-space: normal;
+    font-size: 15px;
+    font-weight: 600;
+  }
+  .cell-muted { font-size: 12px; }
+  .actions-cell {
+    margin-top: 8px;
+    padding-top: 12px;
+    border-top: 1px solid #2B303B;
+    gap: 10px;
+  }
+  .actions-cell button { flex: 1; }
+}
+
+@media (max-width: 600px) {
+  .main-content { padding: 16px; }
+  .article-form { padding: 16px; }
+  .content-title { font-size: 20px; }
+  .login-card { padding: 32px 24px; }
+  .login-title { font-size: 24px; }
+  .form-actions { flex-direction: column-reverse; }
+  .form-actions button { width: 100%; }
+  .sidebar { padding: 10px 14px; gap: 8px; }
+  .sidebar-nav { width: 100%; }
+  .nav-item { flex: 1; justify-content: center; }
+}
 </style>

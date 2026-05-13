@@ -376,15 +376,62 @@ watch(() => route.params.sport, () => {
 }
 
 @media (max-width: 1024px) {
-  .sport-main { grid-template-columns: 1fr; padding: 32px 40px; }
-  .filters-sidebar { display: flex; gap: 32px; }
-  .filter-block { flex: 1; }
-  .articles-grid { grid-template-columns: repeat(2, 1fr); }
+  .sport-main {
+    grid-template-columns: 1fr;
+    gap: 24px;
+    padding: 32px 40px;
+  }
+  .filter-block { margin-bottom: 0; }
+  .filter-list {
+    flex-direction: row;
+    flex-wrap: wrap;
+    gap: 8px;
+  }
+  .filter-item {
+    padding: 8px 14px;
+    border-radius: 999px;
+    background: #191D24;
+    border: 1px solid #2B303B;
+  }
+  .filter-item:hover { background: #1F242D; }
+  .filter-item.active {
+    background: #FC602E;
+    border-color: #FC602E;
+  }
+  .articles-grid {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 20px;
+  }
 }
 
 @media (max-width: 640px) {
-  .sport-main { padding: 24px 20px; }
-  .articles-grid { grid-template-columns: 1fr; }
-  .filters-sidebar { flex-direction: column; }
+  .sport-main {
+    padding: 24px 16px;
+    gap: 20px;
+  }
+  .filter-title {
+    margin-bottom: 10px;
+    font-size: 11px;
+  }
+  .filter-list {
+    flex-wrap: nowrap;
+    overflow-x: auto;
+    padding-bottom: 4px;
+    -webkit-overflow-scrolling: touch;
+    scrollbar-width: none;
+  }
+  .filter-list::-webkit-scrollbar { display: none; }
+  .filter-item {
+    flex-shrink: 0;
+    padding: 8px 12px;
+    font-size: 13px;
+  }
+  .filter-name { white-space: nowrap; }
+  .articles-grid {
+    grid-template-columns: 1fr;
+    gap: 16px;
+  }
+  .card-image { height: 200px; }
+  .card-title { font-size: 15px; }
 }
 </style>

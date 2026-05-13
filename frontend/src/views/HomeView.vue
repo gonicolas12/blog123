@@ -631,22 +631,97 @@ const sports = ref([
   .analysis-content-wrapper { grid-template-columns: 1fr 300px; }
   .sports-grid { grid-template-columns: repeat(3, 1fr); }
   .latest-news-section, .analysis-section, .explore-section { padding-left: 40px; padding-right: 40px; }
+  .hero-content { padding-left: 40px; padding-right: 40px; }
 }
 
 @media (max-width: 1024px) {
   .articles-grid { grid-template-columns: 1fr; }
+  .article-card { height: 380px; }
   .analysis-content-wrapper { grid-template-columns: 1fr; }
   .analysis-grid { grid-template-columns: repeat(2, 1fr); }
 }
 
 @media (max-width: 768px) {
-  .hero-section { height: 500px; }
-  .hero-content { padding: 120px 20px 0; max-width: 100%; }
+  .hero-section { height: auto; min-height: 480px; }
+  .hero-content {
+    padding: 140px 20px 40px;
+    max-width: 100%;
+  }
   .hero-title { font-size: 32px; }
-  .hero-actions { flex-direction: column; }
-  .btn { width: 100%; }
-  .latest-news-section, .analysis-section, .explore-section { padding: 40px 20px; }
-  .sports-grid { grid-template-columns: repeat(2, 1fr); }
-  .analysis-grid { grid-template-columns: 1fr; }
+  .hero-description { font-size: 15px; }
+  .hero-actions { flex-direction: column; align-items: stretch; }
+  .btn-primary { padding: 12px 24px; }
+
+  .section-title { font-size: 20px; margin-bottom: 20px; }
+
+  .latest-news-section,
+  .analysis-section,
+  .explore-section {
+    padding: 40px 20px;
+  }
+
+  .article-card { height: 320px; }
+  .article-overlay { padding: 20px; }
+  .article-title { font-size: 20px; }
+  .article-excerpt {
+    font-size: 13px;
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+  }
+
+  .sidebar-article {
+    padding: 12px;
+    gap: 12px;
+  }
+  .sidebar-article-image {
+    width: 84px;
+    height: 64px;
+  }
+  .sidebar-article-content h4 { font-size: 14px; }
+
+  .sports-grid { grid-template-columns: repeat(2, 1fr); gap: 14px; }
+  .sport-card { padding: 24px 16px; }
+  .sport-icon { font-size: 36px; margin-bottom: 8px; }
+  .sport-name { font-size: 13px; }
+
+  .analysis-grid { grid-template-columns: 1fr; gap: 16px; }
+  .analysis-image { height: 180px; }
+
+  .tendances-card,
+  .newsletter-card { padding: 20px; }
+
+  .newsletter-card h4 { font-size: 18px; }
+
+  .btn-view-more { padding: 12px 24px; font-size: 13px; }
+}
+
+@media (max-width: 480px) {
+  .hero-section { min-height: 440px; }
+  .hero-content { padding: 130px 16px 32px; }
+  .hero-title { font-size: 26px; line-height: 1.15; }
+  .hero-description { font-size: 14px; margin-bottom: 16px; }
+  .hero-badges { gap: 8px; margin-bottom: 16px; }
+  .badge { padding: 4px 10px; font-size: 11px; }
+
+  .latest-news-section,
+  .analysis-section,
+  .explore-section {
+    padding: 32px 16px;
+  }
+
+  .article-card { height: 280px; border-radius: 12px; }
+  .article-overlay { padding: 16px; }
+  .article-title { font-size: 18px; }
+  .article-tags { margin-bottom: 10px; }
+
+  .sidebar-articles { gap: 12px; }
+  .sidebar-article-image { width: 72px; height: 56px; }
+
+  .sports-grid { gap: 10px; }
+  .sport-card { padding: 20px 12px; }
+  .sport-icon { font-size: 32px; }
+  .sport-name { font-size: 12px; }
 }
 </style>

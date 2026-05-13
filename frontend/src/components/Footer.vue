@@ -205,32 +205,76 @@ const currentYear = computed(() => new Date().getFullYear())
 
 /* Responsive */
 @media (max-width: 1024px) {
+  .footer {
+    padding-top: 48px;
+  }
   .footer-container {
     grid-template-columns: 1fr 1fr;
     gap: 40px;
     padding: 0 40px 40px;
   }
-  
+
   .footer-bottom {
     padding: 24px 40px;
   }
 }
 
 @media (max-width: 768px) {
+  .footer {
+    padding-top: 40px;
+  }
   .footer-container {
-    grid-template-columns: 1fr;
+    grid-template-columns: 1fr 1fr;
+    gap: 32px 24px;
     padding: 0 20px 32px;
   }
-  
+
   .footer-brand {
+    grid-column: 1 / -1;
     max-width: 100%;
+    text-align: center;
   }
-  
+
+  .footer-logo {
+    justify-content: center;
+  }
+
+  .social-links {
+    justify-content: center;
+  }
+
+  .footer-tagline {
+    font-size: 13px;
+  }
+
+  .footer-title {
+    margin-bottom: 14px;
+  }
+
+  .footer-links li {
+    margin-bottom: 10px;
+  }
+
   .footer-bottom {
     flex-direction: column;
-    gap: 8px;
-    padding: 24px 20px;
+    gap: 6px;
+    padding: 20px 20px;
     text-align: center;
+  }
+
+  .footer-bottom p {
+    font-size: 12px;
+  }
+}
+
+@media (max-width: 420px) {
+  .footer {
+    padding-top: 32px;
+  }
+  .footer-container {
+    grid-template-columns: 1fr;
+    gap: 28px;
+    padding: 0 16px 24px;
   }
 }
 </style>

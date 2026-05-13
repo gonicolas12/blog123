@@ -659,12 +659,57 @@ onMounted(() => {
 
 @keyframes spin { to { transform: rotate(360deg); } }
 
+@media (max-width: 1024px) {
+  .article-hero { height: 320px; }
+  .hero-inner { padding: 24px 40px; }
+  .article-content-wrapper { padding: 40px 24px 0; }
+  .more-grid { grid-template-columns: repeat(2, 1fr); }
+  .more-articles-section { padding: 48px 24px; }
+}
+
 @media (max-width: 768px) {
+  .article-hero { height: 260px; }
   .hero-inner { padding: 20px; }
-  .article-content-wrapper { padding: 32px 20px 0; }
-  .article-title { font-size: 30px; }
-  .article-meta-row { flex-direction: column; gap: 16px; align-items: flex-start; }
-  .more-grid { grid-template-columns: 1fr; }
-  .more-articles-section { padding: 40px 20px; }
+  .article-content-wrapper { padding: 28px 16px 0; }
+  .article-title { font-size: 26px; line-height: 1.15; }
+  .article-excerpt { font-size: 15px; }
+  .article-meta-row {
+    flex-direction: column;
+    gap: 14px;
+    align-items: flex-start;
+    padding: 16px 0;
+  }
+  .meta-left { gap: 16px; flex-wrap: wrap; }
+  .share-row { width: 100%; justify-content: space-between; }
+  .article-body { font-size: 15px; line-height: 1.7; }
+  .article-body :deep(h3) { font-size: 19px; margin: 1.5rem 0 0.75rem; }
+  .author-card {
+    flex-direction: column;
+    text-align: center;
+    align-items: center;
+    gap: 12px;
+    padding: 20px;
+  }
+  .author-logo { width: 80px; height: 56px; }
+  .bottom-share {
+    flex-direction: column;
+    gap: 14px;
+    align-items: flex-start;
+    padding: 20px 0 40px;
+  }
+  .more-grid { grid-template-columns: 1fr; gap: 16px; }
+  .more-articles-section { padding: 40px 16px; }
+  .more-title { font-size: 20px; margin-bottom: 20px; }
+  .audio-player { padding: 16px; }
+  .video-section, .audio-section { margin-bottom: 28px; }
+}
+
+@media (max-width: 480px) {
+  .article-hero { height: 200px; }
+  .article-title { font-size: 22px; }
+  .article-excerpt { font-size: 14px; }
+  .article-tags { flex-wrap: wrap; }
+  .share-btn { width: 30px; height: 30px; }
+  .article-body { font-size: 14px; }
 }
 </style>

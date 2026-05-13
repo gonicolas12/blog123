@@ -385,11 +385,50 @@ const team = ref([
   background: rgba(255,255,255,0.15);
 }
 
+@media (max-width: 1024px) {
+  .values-grid { grid-template-columns: repeat(2, 1fr); gap: 28px; }
+  .who-section, .mission-section, .values-section, .team-section { padding: 64px 32px; }
+  .cta-section { padding: 64px 32px; }
+}
+
 @media (max-width: 768px) {
-  .values-grid { grid-template-columns: repeat(2, 1fr); }
-  .team-grid { grid-template-columns: 1fr; }
+  .section-heading { font-size: 30px; margin-bottom: 24px; }
+  .section-heading-accent { font-size: 26px; padding-bottom: 16px; }
+
+  .who-section,
+  .mission-section,
+  .values-section,
+  .team-section {
+    padding: 56px 20px;
+  }
+
+  .who-text { font-size: 15px; line-height: 1.7; }
+  .mission-text { font-size: 14px; line-height: 1.7; }
+
+  .values-grid { grid-template-columns: repeat(2, 1fr); gap: 24px 16px; margin-top: 32px; }
+  .value-card { gap: 12px; }
+  .value-icon { width: 56px; height: 56px; }
+  .value-desc { font-size: 12px; }
+
+  .team-grid { grid-template-columns: 1fr; gap: 16px; }
   .team-grid .member-card:last-child:nth-child(odd) { grid-column: span 1; max-width: 100%; }
-  .who-section, .mission-section, .values-section, .team-section { padding: 60px 20px; }
-  .cta-section { padding: 60px 20px; }
+  .member-card { padding: 20px; gap: 14px; }
+  .member-avatar { width: 56px; height: 56px; }
+
+  .cta-section { padding: 56px 20px; }
+  .cta-title { font-size: 28px; }
+  .cta-text { font-size: 14px; }
+  .cta-btn { padding: 12px 26px; font-size: 13px; }
+}
+
+@media (max-width: 420px) {
+  .section-heading { font-size: 26px; }
+  .section-heading-accent { font-size: 22px; }
+  .values-grid { grid-template-columns: 1fr; }
+  .member-card {
+    flex-direction: column;
+    text-align: center;
+    align-items: center;
+  }
 }
 </style>

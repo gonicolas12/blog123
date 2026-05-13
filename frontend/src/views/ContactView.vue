@@ -355,21 +355,41 @@ const handleSubmit = async () => {
 @media (max-width: 900px) {
   .contact-body {
     grid-template-columns: 1fr;
-    padding: 40px 20px;
+    padding: 40px 24px;
   }
   .get-in-touch {
     padding-right: 0;
     border-right: none;
     border-bottom: 1px solid #1E2229;
-    padding-bottom: 40px;
-    margin-bottom: 40px;
+    padding-bottom: 32px;
+    margin-bottom: 32px;
   }
   .form-panel { padding-left: 0; }
 }
 
 @media (max-width: 600px) {
-  .form-row { grid-template-columns: 1fr; }
-  .contact-header { padding: 56px 20px 40px; }
-  .contact-title { font-size: 32px; }
+  .contact-header { padding: 48px 20px 32px; }
+  .contact-title { font-size: 30px; margin-bottom: 14px; }
+  .contact-subtitle { font-size: 14px; }
+
+  .contact-body { padding: 32px 16px; }
+
+  .git-title { font-size: 19px; margin-bottom: 24px; }
+
+  .info-list { gap: 18px; margin-bottom: 28px; }
+  .info-icon { width: 40px; height: 40px; }
+  .info-value { font-size: 13px; }
+
+  .hours-box { padding: 18px; }
+  .hours-row { font-size: 12px; }
+
+  .form-row { grid-template-columns: 1fr; gap: 0; }
+  .form-group { margin-bottom: 16px; }
+  .form-group input,
+  .form-group textarea {
+    padding: 12px 14px;
+    font-size: 14px;
+  }
+  .btn-submit { padding: 14px; font-size: 14px; }
 }
 </style>
